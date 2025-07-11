@@ -1,13 +1,13 @@
-use rosu_pp::Beatmap;
+use rosu_memory_lib::Error;
+use rosu_mem::process::Process;
 use rosu_memory_lib::init_loop;
 use rosu_memory_lib::reader::beatmap::stable::file::get_beatmap_path;
-use rosu_pp::{Difficulty, Performance};
 use rosu_memory_lib::reader::common::stable::memory::get_menu_mods;
-use rosu_mods::GameModsLegacy;
-use std::time::Duration;
-use eyre::Result;
-use rosu_mem::process::{Process};
 use rosu_memory_lib::reader::structs::State;
+use rosu_mods::GameModsLegacy;
+use rosu_pp::Beatmap;
+use rosu_pp::{Difficulty, Performance};
+use std::time::Duration;
 
 /// This example demonstrates how to calculate PP (Performance Points) in real-time
 /// for the currently selected beatmap in osu!stable, taking into account active mods.
@@ -45,7 +45,7 @@ impl CalculatorState {
     fn update_mods(&mut self, new_mods: i32) -> bool {
         if new_mods != self.current_mods {
             self.current_mods = new_mods;
-            
+
             // Convert mod bits to human-readable format
             let mods_readable = GameModsLegacy::from_bits(self.current_mods as u32).to_string();
             println!("Mods: {mods_readable}");
@@ -56,10 +56,10 @@ impl CalculatorState {
     }
 
     /// Attempts to load a new beatmap if the path has changed
-    fn update_beatmap(&mut self, new_path: String) -> Result<bool> {
+    fn update_beatmap(&mut self, new_path: String) -> Result<bool, Error> {
         if new_path != self.current_beatmap_path {
             println!("Loading new beatmap: {new_path}");
-            
+
             // Load and validate the new beatmap
             let beatmap = Beatmap::from_path(&new_path)?;
             if let Err(suspicion) = beatmap.check_suspicion() {
@@ -92,7 +92,11 @@ impl CalculatorState {
 }
 
 /// Processes a single iteration of the monitoring loop
-fn process_game_state(process: &Process, state: &mut State, calc_state: &mut CalculatorState) -> Result<()> {
+fn process_game_state(
+    process: &Process,
+    state: &mut State,
+    calc_state: &mut CalculatorState,
+) -> Result<(), Error> {
     let mut mods_changed = false;
     match get_beatmap_path(process, state) {
         Ok(beatmap_path) => {
@@ -101,9 +105,9 @@ fn process_game_state(process: &Process, state: &mut State, calc_state: &mut Cal
                 mods_changed = calc_state.update_mods(new_mods);
             }
 
-            // Update beatmap if path changed and mods changed else it's useless to recalculate 
+            // Update beatmap if path changed and mods changed else it's useless to recalculate
             if calc_state.update_beatmap(beatmap_path)? && mods_changed {
-                calc_state.update_pp(); 
+                calc_state.update_pp();
             }
         }
         Err(e) => {
@@ -113,7 +117,7 @@ fn process_game_state(process: &Process, state: &mut State, calc_state: &mut Cal
     Ok(())
 }
 
-fn main() -> Result<()> {
+fn main() -> Result<(), Error> {
     // Initialize connection to osu! process, checking every 500ms
     let (mut state, process) = init_loop(500)?;
     println!("Successfully connected to osu! process!");

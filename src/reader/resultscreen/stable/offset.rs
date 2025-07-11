@@ -1,14 +1,12 @@
-
 pub struct ResultScreenOffset {
-    pub ptr : i32,
-    pub addr : i32,
-    pub score_base : i32,
-    pub username : i32,
-    pub score : i32,
-    pub max_combo : i32,
-    pub mode : i32,
-    pub hits : ResultScreenHitsOffset,
-
+    pub ptr: i32,
+    pub addr: i32,
+    pub score_base: i32,
+    pub username: i32,
+    pub score: i32,
+    pub max_combo: i32,
+    pub mode: i32,
+    pub hits: ResultScreenHitsOffset,
 }
 
 pub(crate) const RESULT_SCREEN_OFFSET: ResultScreenOffset = ResultScreenOffset {
@@ -22,7 +20,7 @@ pub(crate) const RESULT_SCREEN_OFFSET: ResultScreenOffset = ResultScreenOffset {
     hits: RESULT_SCREEN_HITS_OFFSET,
 };
 
-pub struct ResultScreenHitsOffset{
+pub struct ResultScreenHitsOffset {
     pub _300: i32,
     pub _100: i32,
     pub _50: i32,

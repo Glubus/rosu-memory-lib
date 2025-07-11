@@ -1,6 +1,3 @@
-
-
-
 #[derive(Debug, Clone)]
 pub struct UserInfo {
     pub id: i32,

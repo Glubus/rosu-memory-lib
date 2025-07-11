@@ -1,11 +1,11 @@
-use std::str::FromStr;
+use crate::Error;
+use rayon::prelude::*;
 use rosu_mem::{
     process::{Process, ProcessTraits},
     signature::Signature,
 };
-use rayon::prelude::*;
-use eyre::Result;
 use std::collections::HashMap;
+use std::str::FromStr;
 use std::time::Instant;
 
 #[derive(Default, Clone)]
@@ -24,13 +24,13 @@ pub struct StaticAddresses {
 }
 
 #[derive(Debug, Default, Clone)]
-pub struct Hit{
-    pub _geki:i16,
-    pub _300:i16,
-    pub _katu:i16,
-    pub _100:i16,
-    pub _50:i16,
-    pub _miss:i16,
+pub struct Hit {
+    pub _geki: i16,
+    pub _300: i16,
+    pub _katu: i16,
+    pub _100: i16,
+    pub _50: i16,
+    pub _miss: i16,
 }
 
 #[derive(Debug, Clone)]
@@ -62,14 +62,11 @@ pub(crate) const SIGNATURES: SignatureBase = SignatureBase {
     user_profile_sig: "FF 15 ?? ?? ?? ?? A1 ?? ?? ?? ?? 8B 48 54 33 D2",
 };
 
-
-
-
 impl StaticAddresses {
-    pub fn new(p: &Process) -> Result<Self> {
+    pub fn new(p: &Process) -> Result<Self, Error> {
         let start = Instant::now();
         println!("Reading signatures in parallel with rayon...");
-        
+
         let signatures = [
             ("base", SIGNATURES.base_sig),
             ("status", SIGNATURES.status_sig),
@@ -84,13 +81,14 @@ impl StaticAddresses {
             ("user_profile", SIGNATURES.user_profile_sig),
         ];
 
-        let results: HashMap<&str, i32> = signatures.par_iter()
+        let results: HashMap<&str, i32> = signatures
+            .par_iter()
             .map(|(name, sig)| {
                 let signature = Signature::from_str(sig)?;
                 let addr = p.read_signature(&signature)?;
-                Ok::<_, eyre::Error>((*name, addr))
+                Ok::<_, Error>((*name, addr))
             })
-            .collect::<Result<_>>()?;
+            .collect::<Result<_, Error>>()?;
 
         println!("Rayon time taken: {:?}", start.elapsed());
 
@@ -108,16 +106,9 @@ impl StaticAddresses {
             user_profile: results["user_profile"],
         })
     }
-
-
-
 }
 
-
-#[derive(Default,Clone)]
+#[derive(Default, Clone)]
 pub struct State {
     pub addresses: StaticAddresses,
 }
-
-
-

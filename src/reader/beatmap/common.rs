@@ -2,8 +2,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::common::GameMode;
 
-
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BeatmapInfo {
     pub metadata: BeatmapMetadata,
@@ -12,9 +10,8 @@ pub struct BeatmapInfo {
     pub technical: BeatmapTechnicalInfo,
 }
 
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct BeatmapMetadata{
+pub struct BeatmapMetadata {
     pub author: String,
     pub creator: String,
     pub title_romanized: String,
@@ -23,7 +20,7 @@ pub struct BeatmapMetadata{
     pub tags: String,
 }
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct BeatmapTechnicalInfo{
+pub struct BeatmapTechnicalInfo {
     pub md5: String,
     pub id: i32,
     pub set_id: i32,
@@ -51,14 +48,14 @@ impl BeatmapLocation {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct BeatmapStarRating{
+pub struct BeatmapStarRating {
     pub no_mod: f64,
     pub dt: f64,
     pub ht: f64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct BeatmapStats{
+pub struct BeatmapStats {
     pub ar: f32,
     pub od: f32,
     pub cs: f32,
@@ -68,9 +65,6 @@ pub struct BeatmapStats{
     pub object_count: i32,
     pub slider_count: i32,
 }
-
-
-
 
 #[derive(Debug, Default, PartialEq, Eq, Copy, Clone, Serialize, Deserialize)]
 #[repr(i16)]
@@ -102,9 +96,6 @@ impl BeatmapStatus {
     }
 }
 
-
-
-
 impl From<i16> for BeatmapStatus {
     fn from(value: i16) -> Self {
         match value {
@@ -126,8 +117,6 @@ impl From<i32> for BeatmapStatus {
     }
 }
 
-
-
 pub(crate) struct BeatmapOffset {
     pub ptr: i32,
     pub metadata: BeatmapMetadataOffset,
@@ -136,7 +125,7 @@ pub(crate) struct BeatmapOffset {
     pub technical: BeatmapTechnicalOffset,
 }
 
-pub struct BeatmapStatsOffset{
+pub struct BeatmapStatsOffset {
     pub ar: i32,
     pub od: i32,
     pub cs: i32,
@@ -148,14 +137,14 @@ pub struct BeatmapStatsOffset{
     pub slider_count: i32,
 }
 
-pub struct BeatmapLocationOffset{
+pub struct BeatmapLocationOffset {
     pub folder: i32,
     pub filename: i32,
     pub audio: i32,
     pub cover: i32,
 }
 
-pub struct BeatmapTechnicalOffset{
+pub struct BeatmapTechnicalOffset {
     pub md5: i32,
     pub id: i32,
     pub set_id: i32,
@@ -163,7 +152,7 @@ pub struct BeatmapTechnicalOffset{
     pub ranked_status: i32,
 }
 
-pub struct BeatmapMetadataOffset{
+pub struct BeatmapMetadataOffset {
     pub author: i32,
     pub creator: i32,
     pub title_romanized: i32,

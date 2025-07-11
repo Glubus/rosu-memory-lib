@@ -1,17 +1,18 @@
 pub mod stable;
+use crate::reader::structs::State;
+use crate::Error;
+use rosu_mem::process::Process;
 use serde::{Deserialize, Serialize};
-use crate::reader::structs::{State};
-use rosu_mem::process::{Process};
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Default)]
-pub enum OsuType{
+pub enum OsuType {
     #[default]
     Stable,
-    Lazer
+    Lazer,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Default, Serialize, Deserialize)]
-pub enum GameMode{
+pub enum GameMode {
     Osu,
     Taiko,
     Catch,
@@ -49,7 +50,7 @@ impl GameMode {
     }
 }
 
-#[derive( Debug, Default, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, Default, PartialEq, Eq, Clone, Copy)]
 #[repr(u32)]
 pub enum GameState {
     MainMenu = 0,
@@ -74,7 +75,6 @@ pub enum GameState {
     Unknown,
 }
 
-
 impl From<u32> for GameState {
     fn from(value: u32) -> Self {
         match value {
@@ -87,7 +87,7 @@ impl From<u32> for GameState {
             6 => Self::SelectDrawing, // Idk wwhat this shit is but tosu said its that lol
             7 => Self::ResultScreen,
             8 => Self::Update, // Idk what this shit is but tosu said its that lol
-            9 => Self::Busy, // Idk what this shit is but tosu said its that lol
+            9 => Self::Busy,   // Idk what this shit is but tosu said its that lol
             10 => Self::Unknown, // if tosu doesnt know i will not too
             11 => Self::MultiplayerLobbySelect,
             12 => Self::MultiplayerLobby,
@@ -102,54 +102,54 @@ impl From<u32> for GameState {
     }
 }
 
-
-#[derive(Debug, Clone)]
-pub enum Error {
-    NotAvailable(String),
+pub struct CommonReader<'a> {
+    pub process: &'a Process,
+    pub state: &'a mut State,
+    pub osu_type: OsuType,
 }
-
-impl std::fmt::Display for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Error::NotAvailable(msg) => write!(f, "{msg}"),
-        }
-    }
-}
-
-
-pub struct CommonReader<'a> { pub process : &'a Process, pub state : &'a mut State, pub osu_type : OsuType}
 
 impl<'a> CommonReader<'a> {
     pub fn new(p: &'a Process, state: &'a mut State, osu_type: OsuType) -> Self {
-        Self { process: p, state, osu_type }
+        Self {
+            process: p,
+            state,
+            osu_type,
+        }
     }
 
-    pub fn get_game_state(&mut self) -> eyre::Result<GameState> {
+    pub fn get_game_state(&mut self) -> Result<GameState, Error> {
         match self.osu_type {
             OsuType::Stable => stable::memory::get_game_state(self.process, self.state),
-            _ => Err(eyre::eyre!("Unsupported osu type for now")),
+            _ => Err(Error::Unsupported(
+                "Unsupported osu type for now".to_string(),
+            )),
         }
     }
 
-    pub fn get_menu_mods(&mut self) -> eyre::Result<i32> {
+    pub fn get_menu_mods(&mut self) -> Result<i32, Error> {
         match self.osu_type {
             OsuType::Stable => stable::memory::get_menu_mods(self.process, self.state),
-            _ => Err(eyre::eyre!("Unsupported osu type for now")),
+            _ => Err(Error::Unsupported(
+                "Unsupported osu type for now".to_string(),
+            )),
         }
     }
-    
-    pub fn get_path_folder(&mut self) -> eyre::Result<String> {
+
+    pub fn get_path_folder(&mut self) -> Result<String, Error> {
         match self.osu_type {
             OsuType::Stable => stable::memory::get_path_folder(self.process, self.state),
-            _ => Err(eyre::eyre!("Unsupported osu type for now")),
+            _ => Err(Error::Unsupported(
+                "Unsupported osu type for now".to_string(),
+            )),
         }
     }
-    
-    pub fn check_game_state(&mut self, g_state: GameState) -> eyre::Result<bool> {
+
+    pub fn check_game_state(&mut self, g_state: GameState) -> Result<bool, Error> {
         match self.osu_type {
             OsuType::Stable => stable::memory::check_game_state(self.process, self.state, g_state),
-            _ => Err(eyre::eyre!("Unsupported osu type for now")),
+            _ => Err(Error::Unsupported(
+                "Unsupported osu type for now".to_string(),
+            )),
         }
     }
 }
-

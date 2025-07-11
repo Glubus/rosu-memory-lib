@@ -7,6 +7,6 @@ pub struct ResultScreenInfo {
     pub mode: GameMode,
     pub max_combo: i16,
     pub score: i32,
-    pub hit : Hit,
+    pub hit: Hit,
     pub accuracy: f64,
 }

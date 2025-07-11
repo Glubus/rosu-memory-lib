@@ -1,26 +1,30 @@
 pub mod beatmap;
 pub mod common;
-pub mod resultscreen;
 pub mod gameplay;
+pub mod resultscreen;
 pub mod user;
 
-use std::time::Duration;
 use crate::reader::common::stable::memory::get_game_state;
 use crate::reader::common::GameState;
-use rosu_mem::process::{Process, ProcessTraits};
 use crate::reader::structs::State;
 use crate::reader::structs::StaticAddresses;
-use rosu_mem::error::ProcessError;
-
+use crate::Error;
+use rosu_mem::process::{Process, ProcessTraits};
+use std::time::Duration;
 pub mod structs;
 
 static EXCLUDE_WORDS: [&str; 2] = ["umu-run", "waitforexitandrun"];
 
 #[allow(dead_code)]
 // Use this function to make callback and get anything you need such as map info or user info or even submit shit
-pub fn waiting_for_gamestate<F>(p: &Process, state: &mut State, g_state: GameState, callback: Option<F>) -> eyre::Result<()> 
-where 
-    F: Fn(&Process, &mut State) -> eyre::Result<()>
+pub fn waiting_for_gamestate<F>(
+    p: &Process,
+    state: &mut State,
+    g_state: GameState,
+    callback: Option<F>,
+) -> Result<(), Error>
+where
+    F: Fn(&Process, &mut State) -> Result<(), Error>,
 {
     loop {
         if get_game_state(p, state)? == g_state {
@@ -33,16 +37,16 @@ where
 }
 
 #[allow(dead_code)]
-pub fn init_loop(sleep_duration: u64) -> eyre::Result<(State, Process)> {
+pub fn init_loop(sleep_duration: u64) -> Result<(State, Process), Error> {
     let mut state = State {
         addresses: StaticAddresses::default(),
     };
-    
+
     loop {
         match Process::initialize("osu!.exe", &EXCLUDE_WORDS) {
             Ok(p) => {
                 println!("Found process, pid - {}", p.pid);
-                
+
                 println!("Reading static signatures...");
                 match StaticAddresses::new(&p) {
                     Ok(v) => {
@@ -51,24 +55,25 @@ pub fn init_loop(sleep_duration: u64) -> eyre::Result<(State, Process)> {
                         return Ok((state, p));
                     }
                     Err(e) => {
-                        if let Some(pe) = e.downcast_ref::<ProcessError>() {
-                            match pe {
-                                &ProcessError::ProcessNotFound => {
+                        match e {
+                            Error::MemoryRead(msg) => {
+                                if msg.contains("Process not found") {
                                     println!("Process not found, sleeping for {sleep_duration}ms");
                                     std::thread::sleep(Duration::from_millis(sleep_duration));
                                     continue;
                                 }
                                 #[cfg(target_os = "windows")]
-                                &ProcessError::OsError { .. } => {
+                                if msg.contains("OS error") {
                                     println!("OS error, sleeping for {sleep_duration}ms");
                                     std::thread::sleep(Duration::from_millis(sleep_duration));
                                     continue;
                                 }
-                                _ => {
-                                    println!("Unknown error, sleeping for {sleep_duration}ms");
-                                    std::thread::sleep(Duration::from_millis(sleep_duration));
-                                    continue;
-                                }
+                                println!("Unknown error, sleeping for {sleep_duration}ms");
+                                std::thread::sleep(Duration::from_millis(sleep_duration));
+                            }
+                            _ => {
+                                println!("Unknown error, sleeping for {sleep_duration}ms");
+                                std::thread::sleep(Duration::from_millis(sleep_duration));
                             }
                         }
                         println!("Unknown error, sleeping for {sleep_duration}ms");
@@ -83,7 +88,6 @@ pub fn init_loop(sleep_duration: u64) -> eyre::Result<(State, Process)> {
         }
     }
 }
-
 
 // Exemple of playing loop
 // pub(crate) fn playing(p: &Process, state: &mut State) -> bool {

@@ -1,2 +1,2 @@
-mod offset;
 pub mod memory;
+mod offset;

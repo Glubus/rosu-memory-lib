@@ -1,4 +1,3 @@
-
 pub struct CommonOffset {
     pub settings_ptr: i32,
     pub settings_addr: i32,
@@ -8,7 +7,6 @@ pub struct CommonOffset {
     pub ig_time: i32,
 }
 
-
 pub(crate) const COMMON_OFFSET: CommonOffset = CommonOffset {
     settings_ptr: 0x8,
     settings_addr: 0xb8,
@@ -17,5 +15,3 @@ pub(crate) const COMMON_OFFSET: CommonOffset = CommonOffset {
     mods_ptr: 0x9,
     ig_time: 0x5,
 };
-
-

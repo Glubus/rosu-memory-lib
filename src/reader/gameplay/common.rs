@@ -9,7 +9,6 @@ pub struct GameplayInfo {
     pub hp: f64,
     pub username: String,
     pub ig_time: i32,
-    pub retries: i32,   
+    pub retries: i32,
     pub hits: Hit,
 }
-

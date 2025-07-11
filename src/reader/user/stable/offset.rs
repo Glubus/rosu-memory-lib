@@ -1,7 +1,4 @@
-
-
-
-pub struct UserProfileOffset{
+pub struct UserProfileOffset {
     pub ptr: i32,
     pub id: i32,
     pub username: i32,

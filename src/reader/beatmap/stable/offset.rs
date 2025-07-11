@@ -1,8 +1,8 @@
 use crate::reader::beatmap::common::BeatmapLocationOffset;
-use crate::reader::beatmap::common::BeatmapStatsOffset;
-use crate::reader::beatmap::common::BeatmapOffset;
-use crate::reader::beatmap::common::BeatmapTechnicalOffset;
 use crate::reader::beatmap::common::BeatmapMetadataOffset;
+use crate::reader::beatmap::common::BeatmapOffset;
+use crate::reader::beatmap::common::BeatmapStatsOffset;
+use crate::reader::beatmap::common::BeatmapTechnicalOffset;
 
 pub(crate) const BEATMAP_LOCATION_OFFSET: BeatmapLocationOffset = BeatmapLocationOffset {
     folder: 0x78,
@@ -17,8 +17,8 @@ pub(crate) const BEATMAP_STATS_OFFSET: BeatmapStatsOffset = BeatmapStatsOffset {
     cs: 0x34,
     hp: 0x38,
     object_count: 0xf8,
-    total_length: 0x134, 
-    drain_time: 0x0, // TODO 
+    total_length: 0x134,
+    drain_time: 0x0,  // TODO
     star_rating: 0x0, // TODO
     slider_count: 0x146,
 };
@@ -27,7 +27,7 @@ pub(crate) const BEATMAP_TECHNICAL_OFFSET: BeatmapTechnicalOffset = BeatmapTechn
     md5: 0x6c,
     id: 0xc8,
     set_id: 0xcc,
-    mode: 0x11c, 
+    mode: 0x11c,
     ranked_status: 0x12c,
 };
 
@@ -48,4 +48,4 @@ pub(crate) const BEATMAP_METADATA_OFFSET: BeatmapMetadataOffset = BeatmapMetadat
     tags: 0x20,
 };
 
-// 0x12a Could be draintime -> 
+// 0x12a Could be draintime ->
