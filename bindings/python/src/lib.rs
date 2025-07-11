@@ -3,7 +3,6 @@ mod reader;
 mod common;
 
 use common::{PyProcess, PyState};
-use reader::beatmap::stable::memory::PyBeatmapInfo;
 use reader::beatmap::stable::memory::get_beatmap_info;
 
 #[pyfunction]

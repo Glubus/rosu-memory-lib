@@ -1,6 +1,4 @@
-use rosu_memory_lib::reader::structs::State;
 use rosu_memory_lib::reader::beatmap::common::BeatmapInfo;
-use rosu_mem::process::Process;
 use pyo3::prelude::*;
 use rosu_memory_lib::reader::beatmap::common::BeatmapLocation;
 use rosu_memory_lib::reader::beatmap::common::BeatmapStats;
@@ -310,8 +308,13 @@ impl From<BeatmapTechnicalInfo> for PyBeatmapTechnicalInfo {
 }
 
 #[pyfunction]
-pub fn get_beatmap_info(process: &PyProcess, state: &mut PyState) -> PyResult<PyBeatmapInfo> {
-    let beatmap_info = rosu_memory_lib::reader::beatmap::stable::memory::get_beatmap_info(&process.0, &mut state.0);
-    let bm = PyBeatmapInfo::from(beatmap_info.unwrap());
-    Ok(bm)
+pub fn get_beatmap_info(process: &PyProcess, state: &mut PyState) -> PyResult<PyBeatmapInfo> 
+{
+    match rosu_memory_lib::reader::beatmap::stable::memory::get_beatmap_info(&process.0, &mut state.0) {
+        Ok(beatmap_info) => {
+            let bm = PyBeatmapInfo::from(beatmap_info);
+            Ok(bm)
+        }
+        Err(e) => Err(PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(e.to_string())),
+    }
 }
