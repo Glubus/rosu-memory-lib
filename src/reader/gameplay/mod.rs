@@ -76,9 +76,9 @@ impl<'a> GameplayReader<'a> {
         }
     }
 
-    pub fn get_ig_time(&mut self) -> Result<i32, Error> {
+    pub fn game_time(&mut self) -> Result<i32, Error> {
         match self.osu_type {
-            OsuClientKind::Stable => stable::memory::get_ig_time(self.process, self.state),
+            OsuClientKind::Stable => crate::reader::common::stable::memory::game_time(self.process, self.state),
             _ => Err(Error::Unsupported(
                 "Unsupported osu type for now".to_string(),
             )),

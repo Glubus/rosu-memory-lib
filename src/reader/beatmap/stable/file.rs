@@ -7,7 +7,7 @@ use crate::reader::beatmap::common::{
 };
 use crate::reader::beatmap::stable::memory::{audio, filename, folder};
 use crate::reader::beatmap::stable::{beatmap_addr, offset::BEATMAP_OFFSET};
-use crate::reader::common::stable::memory::get_path_folder;
+use crate::reader::common::stable::memory::path_folder;
 use crate::reader::structs::State;
 use crate::Error;
 use rosu_map::section::hit_objects::HitObjectKind;
@@ -17,7 +17,7 @@ use rosu_mem::process::{Process, ProcessTraits};
 pub fn path(p: &Process, state: &mut State) -> Result<PathBuf, Error> {
     let folder = folder(p, state)?;
     let filename = filename(p, state)?;
-    let songs_path = get_path_folder(p, state)?;
+    let songs_path = path_folder(p, state)?;
 
     Ok(songs_path.join(folder).join(filename))
 }
@@ -25,7 +25,7 @@ pub fn path(p: &Process, state: &mut State) -> Result<PathBuf, Error> {
 pub fn audio_path(p: &Process, state: &mut State) -> Result<PathBuf, Error> {
     let folder = folder(p, state)?;
     let audio = audio(p, state)?;
-    let songs_path = get_path_folder(p, state)?;
+    let songs_path = path_folder(p, state)?;
 
     Ok(songs_path.join(folder).join(audio))
 }
@@ -121,7 +121,7 @@ pub fn status(p: &Process, state: &mut State) -> Result<BeatmapStatus, Error> {
 pub fn star_rating(p: &Process, state: &mut State) -> Result<BeatmapStarRating, Error> {
     let folder = folder(p, state)?;
     let filename = filename(p, state)?;
-    let songs_path = get_path_folder(p, state)?;
+    let songs_path = path_folder(p, state)?;
     let path = songs_path.join(folder).join(filename);
     let b = rosu_pp::Beatmap::from_path(path)?;
     let diff_attrs = rosu_pp::Difficulty::new().calculate(&b);

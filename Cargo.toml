@@ -23,6 +23,10 @@ rosu-mem = "2.0.0"
 rosu-map = "0.2.1"
 rosu-pp = "3.1.0"
 rayon = { version = "1.10.0", optional = true }
+rosu-mods = "0.3.1"
 
 [dev-dependencies]
 rosu-mods = "0.3.1"
+
+[profile.dev.package.rosu-mem]
+opt-level = 3

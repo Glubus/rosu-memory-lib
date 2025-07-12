@@ -1,4 +1,4 @@
-use crate::reader::common::stable::memory::check_game_state;
+use crate::reader::common::stable::memory::{check_game_state, game_time};
 use crate::reader::common::GameState;
 use crate::reader::gameplay::common::GameplayInfo;
 use crate::reader::gameplay::stable::offset::GAMEPLAY_OFFSET;
@@ -77,8 +77,9 @@ pub fn get_username(p: &Process, state: &mut State) -> Result<String, Error> {
     Ok(username)
 }
 
+
 pub fn get_ig_time(p: &Process, state: &mut State) -> Result<i32, Error> {
-    crate::reader::common::stable::memory::get_ig_time(p, state)
+    crate::reader::common::stable::memory::game_time(p, state)
 }
 
 pub fn get_retries(p: &Process, state: &mut State) -> Result<i32, Error> {
@@ -149,7 +150,7 @@ pub fn get_gameplay_info(p: &Process, state: &mut State) -> Result<GameplayInfo,
         max_combo: p.read_i16(base2 + GAMEPLAY_OFFSET.max_combo)?,
         hp,
         username: p.read_string(base2 + GAMEPLAY_OFFSET.username)?,
-        ig_time: get_ig_time(p, state)?, // different base
+        ig_time: game_time(p, state)?, // different base
         retries: get_retries(p, state)?, // different base
         hits: Hit {
             _300: p.read_i16(base2 + GAMEPLAY_OFFSET.hits._300)?,

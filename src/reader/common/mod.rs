@@ -120,27 +120,27 @@ impl<'a> CommonReader<'a> {
         }
     }
 
-    pub fn get_game_state(&mut self) -> Result<GameState, Error> {
+    pub fn game_state(&mut self) -> Result<GameState, Error> {
         match self.osu_type {
-            OsuClientKind::Stable => stable::memory::get_game_state(self.process, self.state),
+            OsuClientKind::Stable => stable::memory::game_state(self.process, self.state),
             _ => Err(Error::Unsupported(
                 "Unsupported osu type for now".to_string(),
             )),
         }
     }
 
-    pub fn get_menu_mods(&mut self) -> Result<i32, Error> {
+    pub fn menu_game_mode(&mut self) -> Result<GameMode, Error> {
         match self.osu_type {
-            OsuClientKind::Stable => stable::memory::get_menu_mods(self.process, self.state),
+            OsuClientKind::Stable => stable::memory::menu_game_mode(self.process, self.state),
             _ => Err(Error::Unsupported(
                 "Unsupported osu type for now".to_string(),
             )),
         }
     }
 
-    pub fn get_path_folder(&mut self) -> Result<PathBuf, Error> {
+    pub fn path_folder(&mut self) -> Result<PathBuf, Error> {
         match self.osu_type {
-            OsuClientKind::Stable => stable::memory::get_path_folder(self.process, self.state),
+            OsuClientKind::Stable => stable::memory::path_folder(self.process, self.state),
             _ => Err(Error::Unsupported(
                 "Unsupported osu type for now".to_string(),
             )),
