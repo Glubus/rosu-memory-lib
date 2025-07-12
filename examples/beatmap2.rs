@@ -7,7 +7,7 @@ fn main() -> Result<(), Error> {
     let (mut state, process) = init_loop(500)?;
     let mut beatmap_reader = BeatmapReader::new(&process, &mut state, OsuClientKind::Stable)?;
     loop {
-        match beatmap_reader.get_beatmap_info() {
+        match beatmap_reader.info() {
             Ok(beatmap_info) => println!("Current beatmap info: {beatmap_info:?}"),
             Err(e) => println!("Error: {e:?}"),
         }

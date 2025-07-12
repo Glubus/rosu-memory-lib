@@ -1,6 +1,7 @@
 pub mod beatmap;
 pub mod common;
 pub mod gameplay;
+pub mod helpers;
 pub mod resultscreen;
 pub mod user;
 

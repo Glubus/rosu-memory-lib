@@ -1,6 +1,6 @@
 use rosu_mem::process::Process;
 use rosu_memory_lib::init_loop;
-use rosu_memory_lib::reader::beatmap::stable::file::get_beatmap_path;
+use rosu_memory_lib::reader::beatmap::stable::file::path;
 use rosu_memory_lib::reader::common::stable::memory::get_menu_mods;
 use rosu_memory_lib::reader::structs::State;
 use rosu_memory_lib::Error;
@@ -99,7 +99,7 @@ fn process_game_state(
     calc_state: &mut CalculatorState,
 ) -> Result<(), Error> {
     let mut mods_changed = false;
-    match get_beatmap_path(process, state) {
+    match path(process, state) {
         Ok(beatmap_path) => {
             // Update mods if they changed
             if let Ok(new_mods) = get_menu_mods(process, state) {
