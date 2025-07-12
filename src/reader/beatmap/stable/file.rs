@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use crate::common::GameMode;
 use crate::reader::beatmap::common::{
     BeatmapInfo, BeatmapLocation, BeatmapMetadata, BeatmapStarRating, BeatmapStats, BeatmapStatus,
@@ -12,18 +14,20 @@ use rosu_map::section::hit_objects::HitObjectKind;
 use rosu_map::Beatmap as RmBeatmap;
 use rosu_mem::process::{Process, ProcessTraits};
 
-pub fn get_beatmap_path(p: &Process, state: &mut State) -> Result<String, Error> {
+pub fn get_beatmap_path(p: &Process, state: &mut State) -> Result<PathBuf, Error> {
     let folder = get_folder(p, state)?;
     let filename = get_filename(p, state)?;
-    let song_path = get_path_folder(p, state)?;
-    Ok(format!("{song_path}/{folder}/{filename}"))
+    let songs_path = get_path_folder(p, state)?;
+
+    Ok(songs_path.join(folder).join(filename))
 }
 
-pub fn get_audio_path(p: &Process, state: &mut State) -> Result<String, Error> {
+pub fn get_audio_path(p: &Process, state: &mut State) -> Result<PathBuf, Error> {
     let folder = get_folder(p, state)?;
     let audio = get_audio(p, state)?;
-    let song_path = get_path_folder(p, state)?;
-    Ok(format!("{song_path}/{folder}/{audio}"))
+    let songs_path = get_path_folder(p, state)?;
+
+    Ok(songs_path.join(folder).join(audio))
 }
 
 pub fn get_beatmap_md5(p: &Process, state: &mut State) -> Result<String, Error> {
@@ -63,8 +67,17 @@ pub fn get_beatmap_length(p: &Process, state: &mut State) -> Result<i32, Error> 
 pub fn get_beatmap_drain_time(p: &Process, state: &mut State) -> Result<i32, Error> {
     let path = get_beatmap_path(p, state)?;
     let b = RmBeatmap::from_path(path)?;
+
+    if b.hit_objects.is_empty() {
+        return Ok(0);
+    }
+
+    // SAFETY: Checked bounds above
+    // TODO: That's misleading because last note can be LN or slider
+    // which have duration beyond start_time
     let drain_time =
         b.hit_objects.last().unwrap().start_time - b.hit_objects.first().unwrap().start_time;
+
     Ok(drain_time as i32)
 }
 
@@ -145,8 +158,8 @@ pub fn get_beatmap_slider_count(p: &Process, state: &mut State) -> Result<i32, E
 pub fn get_beatmap_star_rating(p: &Process, state: &mut State) -> Result<BeatmapStarRating, Error> {
     let folder = get_folder(p, state)?;
     let filename = get_filename(p, state)?;
-    let song_path = get_path_folder(p, state)?;
-    let path = format!("{song_path}/{folder}/{filename}");
+    let songs_path = get_path_folder(p, state)?;
+    let path = songs_path.join(folder).join(filename);
     let b = rosu_pp::Beatmap::from_path(path)?;
     let diff_attrs = rosu_pp::Difficulty::new().calculate(&b);
     let diff_dt = rosu_pp::Difficulty::new().mods(64).calculate(&b);
@@ -165,8 +178,7 @@ pub fn get_beatmap_stats(p: &Process, state: &mut State) -> Result<BeatmapStats,
         od: b.overall_difficulty,
         cs: b.circle_size,
         hp: b.hp_drain_rate,
-        total_length: b.hit_objects.last().unwrap().start_time as i32
-            - b.hit_objects.first().unwrap().start_time as i32,
+        total_length: get_beatmap_drain_time(p, state)?,
         star_rating: get_beatmap_star_rating(p, state)?,
         object_count: b.hit_objects.len() as i32,
         slider_count: b
@@ -203,8 +215,7 @@ pub fn get_beatmap_info(p: &Process, state: &mut State) -> Result<BeatmapInfo, E
             od: b.overall_difficulty,
             cs: b.circle_size,
             hp: b.hp_drain_rate,
-            total_length: b.hit_objects.last().unwrap().start_time as i32
-                - b.hit_objects.first().unwrap().start_time as i32,
+            total_length: get_beatmap_drain_time(p, state)?,
             star_rating: get_beatmap_star_rating(p, state)?,
             object_count: b.hit_objects.len() as i32,
             slider_count: b

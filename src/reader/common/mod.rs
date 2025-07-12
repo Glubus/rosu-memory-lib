@@ -1,10 +1,12 @@
 pub mod stable;
+use std::path::PathBuf;
+
 use crate::reader::structs::State;
 use crate::Error;
 use rosu_mem::process::Process;
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Default)]
-pub enum OsuType {
+pub enum OsuClientKind {
     #[default]
     Stable,
     Lazer,
@@ -19,6 +21,7 @@ pub enum GameMode {
     #[default]
     Unknown,
 }
+
 impl From<u32> for GameMode {
     fn from(value: u32) -> Self {
         match value {
@@ -36,6 +39,7 @@ impl From<i32> for GameMode {
         Self::from(value as u32)
     }
 }
+
 impl GameMode {
     #[allow(clippy::inherent_to_string)]
     pub fn to_string(&self) -> String {
@@ -104,11 +108,11 @@ impl From<u32> for GameState {
 pub struct CommonReader<'a> {
     pub process: &'a Process,
     pub state: &'a mut State,
-    pub osu_type: OsuType,
+    pub osu_type: OsuClientKind,
 }
 
 impl<'a> CommonReader<'a> {
-    pub fn new(p: &'a Process, state: &'a mut State, osu_type: OsuType) -> Self {
+    pub fn new(p: &'a Process, state: &'a mut State, osu_type: OsuClientKind) -> Self {
         Self {
             process: p,
             state,
@@ -118,7 +122,7 @@ impl<'a> CommonReader<'a> {
 
     pub fn get_game_state(&mut self) -> Result<GameState, Error> {
         match self.osu_type {
-            OsuType::Stable => stable::memory::get_game_state(self.process, self.state),
+            OsuClientKind::Stable => stable::memory::get_game_state(self.process, self.state),
             _ => Err(Error::Unsupported(
                 "Unsupported osu type for now".to_string(),
             )),
@@ -127,16 +131,16 @@ impl<'a> CommonReader<'a> {
 
     pub fn get_menu_mods(&mut self) -> Result<i32, Error> {
         match self.osu_type {
-            OsuType::Stable => stable::memory::get_menu_mods(self.process, self.state),
+            OsuClientKind::Stable => stable::memory::get_menu_mods(self.process, self.state),
             _ => Err(Error::Unsupported(
                 "Unsupported osu type for now".to_string(),
             )),
         }
     }
 
-    pub fn get_path_folder(&mut self) -> Result<String, Error> {
+    pub fn get_path_folder(&mut self) -> Result<PathBuf, Error> {
         match self.osu_type {
-            OsuType::Stable => stable::memory::get_path_folder(self.process, self.state),
+            OsuClientKind::Stable => stable::memory::get_path_folder(self.process, self.state),
             _ => Err(Error::Unsupported(
                 "Unsupported osu type for now".to_string(),
             )),
@@ -145,7 +149,9 @@ impl<'a> CommonReader<'a> {
 
     pub fn check_game_state(&mut self, g_state: GameState) -> Result<bool, Error> {
         match self.osu_type {
-            OsuType::Stable => stable::memory::check_game_state(self.process, self.state, g_state),
+            OsuClientKind::Stable => {
+                stable::memory::check_game_state(self.process, self.state, g_state)
+            }
             _ => Err(Error::Unsupported(
                 "Unsupported osu type for now".to_string(),
             )),
