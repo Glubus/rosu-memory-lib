@@ -143,12 +143,12 @@ pub fn get_gameplay_info(p: &Process, state: &mut State) -> Result<GameplayInfo,
     let mods = get_mods(p, state)?;
 
     Ok(GameplayInfo {
-        score: p.read_i32(base2 + GAMEPLAY_OFFSET.score).unwrap(),
+        score: p.read_i32(base2 + GAMEPLAY_OFFSET.score)?,
         mods,
-        combo: p.read_i16(base2 + GAMEPLAY_OFFSET.combo).unwrap(),
-        max_combo: p.read_i16(base2 + GAMEPLAY_OFFSET.max_combo).unwrap(),
+        combo: p.read_i16(base2 + GAMEPLAY_OFFSET.combo)?,
+        max_combo: p.read_i16(base2 + GAMEPLAY_OFFSET.max_combo)?,
         hp,
-        username: p.read_string(base2 + GAMEPLAY_OFFSET.username).unwrap(),
+        username: p.read_string(base2 + GAMEPLAY_OFFSET.username)?,
         ig_time: get_ig_time(p, state)?, // different base
         retries: get_retries(p, state)?, // different base
         hits: Hit {

@@ -7,6 +7,7 @@ use rosu_memory_lib::Error;
 use rosu_mods::GameModsLegacy;
 use rosu_pp::Beatmap;
 use rosu_pp::{Difficulty, Performance};
+use std::path::{Path, PathBuf};
 use std::time::Duration;
 
 /// This example demonstrates how to calculate PP (Performance Points) in real-time
@@ -27,7 +28,7 @@ struct CalculatorState {
     current_pp: f64,
     current_mods: i32,
     current_beatmap: Beatmap,
-    current_beatmap_path: String,
+    current_beatmap_path: PathBuf,
 }
 
 impl CalculatorState {
@@ -37,7 +38,7 @@ impl CalculatorState {
             current_pp: 0.0,
             current_mods: 0,
             current_beatmap: Beatmap::default(),
-            current_beatmap_path: String::new(),
+            current_beatmap_path: PathBuf::new(),
         }
     }
 
@@ -56,9 +57,9 @@ impl CalculatorState {
     }
 
     /// Attempts to load a new beatmap if the path has changed
-    fn update_beatmap(&mut self, new_path: String) -> Result<bool, Error> {
-        if new_path != self.current_beatmap_path {
-            println!("Loading new beatmap: {new_path}");
+    fn update_beatmap<P: AsRef<Path>>(&mut self, new_path: P) -> Result<bool, Error> {
+        if new_path.as_ref() != self.current_beatmap_path {
+            println!("Loading new beatmap: {}", new_path.as_ref().display());
 
             // Load and validate the new beatmap
             let beatmap = Beatmap::from_path(&new_path)?;
@@ -69,7 +70,7 @@ impl CalculatorState {
 
             // Update cached beatmap
             self.current_beatmap = beatmap;
-            self.current_beatmap_path = new_path;
+            self.current_beatmap_path = new_path.as_ref().to_path_buf();
             println!("Beatmap loaded successfully!");
             Ok(true)
         } else {
