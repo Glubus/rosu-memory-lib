@@ -25,8 +25,7 @@ pub fn get_user_country_code(p: &Process, state: &mut State) -> Result<i32, Erro
 
 pub fn get_user_username(p: &Process, state: &mut State) -> Result<String, Error> {
     let user_profile_base = get_user_profile_base(p, state)?;
-    let username_ptr = p.read_i32(user_profile_base + USER_PROFILE_OFFSET.username)?;
-    Ok(p.read_string(username_ptr)?)
+    Ok(p.read_string(user_profile_base + USER_PROFILE_OFFSET.username)?)
 }
 
 pub fn get_user_pp(p: &Process, state: &mut State) -> Result<i32, Error> {
@@ -69,7 +68,7 @@ pub fn get_user_info(p: &Process, state: &mut State) -> Result<UserInfo, Error> 
 
     let user_profile = UserInfo {
         id: p.read_i32(user_profile_base + USER_PROFILE_OFFSET.id)?,
-        username: p.read_string(p.read_i32(user_profile_base + USER_PROFILE_OFFSET.username)?)?, // TODO: need a fix idk how it show weirdly
+        username: p.read_string(user_profile_base + USER_PROFILE_OFFSET.username)?,
         pp: p.read_i32(user_profile_base + USER_PROFILE_OFFSET.pp)?,
         rankedscore: p.read_i64(user_profile_base + USER_PROFILE_OFFSET.rankedscore)?,
         level: p.read_f32(user_profile_base + USER_PROFILE_OFFSET.level)?,
