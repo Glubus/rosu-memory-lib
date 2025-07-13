@@ -1,13 +1,13 @@
+use crate::generate_offset_getter;
 use crate::reader::common::stable::memory::check_game_state;
 use crate::reader::common::GameMode;
 use crate::reader::common::GameState;
+use crate::reader::helpers::{calculate_accuracy, read_i16, read_i32, read_string};
 use crate::reader::resultscreen::common::ResultScreenInfo;
 use crate::reader::resultscreen::stable::offset::RESULT_SCREEN_OFFSET;
 use crate::reader::structs::{Hit, State};
 use crate::Error;
 use rosu_mem::process::{Process, ProcessTraits};
-use crate::generate_offset_getter;
-use crate::reader::helpers::{calculate_accuracy, read_i16, read_i32, read_string};
 
 pub fn result_screen_ptr(p: &Process, state: &mut State) -> Result<i32, Error> {
     if check_game_state(p, state, GameState::ResultScreen)? {
@@ -47,8 +47,6 @@ generate_offset_getter! {
     hits_geki: i16 = read_i16(RESULT_SCREEN_OFFSET.hits._geki, result_screen_base);
     hits_katu: i16 = read_i16(RESULT_SCREEN_OFFSET.hits._katu, result_screen_base);
 }
-
-
 
 pub fn info(p: &Process, state: &mut State) -> Result<ResultScreenInfo, Error> {
     let hits = hits(p, state)?;

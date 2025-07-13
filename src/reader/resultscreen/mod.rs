@@ -1,5 +1,6 @@
 pub mod common;
 pub mod stable;
+use crate::impl_osu_accessor;
 use crate::reader::common::GameMode;
 use crate::reader::common::OsuClientKind;
 use crate::reader::resultscreen::common::ResultScreenInfo;
@@ -7,7 +8,6 @@ use crate::reader::structs::Hit;
 use crate::reader::structs::State;
 use crate::Error;
 use rosu_mem::process::Process;
-use crate::impl_osu_accessor;
 pub struct ResultScreenReader<'a> {
     pub process: &'a Process,
     pub state: &'a mut State,

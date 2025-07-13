@@ -30,7 +30,6 @@ pub fn audio_path(p: &Process, state: &mut State) -> Result<PathBuf, Error> {
     Ok(songs_path.join(folder).join(audio))
 }
 
-
 // generate getters that use the default logic
 macro_rules! generate_beatmap_field_getter {
     (
@@ -110,7 +109,6 @@ generate_beatmap_custom_getter_safe! {
     }
 
 }
-
 
 // cant do this in file mode
 pub fn status(p: &Process, state: &mut State) -> Result<BeatmapStatus, Error> {

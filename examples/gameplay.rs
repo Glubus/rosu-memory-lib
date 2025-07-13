@@ -1,6 +1,6 @@
 use rosu_memory_lib::init_loop;
-use rosu_memory_lib::reader::gameplay::GameplayReader;
 use rosu_memory_lib::reader::common::OsuClientKind;
+use rosu_memory_lib::reader::gameplay::GameplayReader;
 use rosu_memory_lib::Error;
 
 fn main() -> Result<(), Error> {

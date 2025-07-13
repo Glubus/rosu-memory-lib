@@ -1,11 +1,11 @@
 pub mod common;
 pub mod stable;
+use crate::impl_osu_accessor;
 use crate::reader::common::OsuClientKind;
 use crate::reader::structs::State;
 use crate::reader::user::common::UserInfo;
 use crate::Error;
 use rosu_mem::process::Process;
-
 pub struct UserReader<'a> {
     pub process: &'a Process,
     pub state: &'a mut State,
@@ -20,116 +20,18 @@ impl<'a> UserReader<'a> {
             osu_type,
         }
     }
-
-    pub fn get_user_info(&mut self) -> Result<UserInfo, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::get_user_info(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn get_user_id(&mut self) -> Result<i32, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::get_user_id(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn get_user_bancho_status(&mut self) -> Result<i32, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => {
-                stable::memory::get_user_bancho_status(self.process, self.state)
-            }
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn get_user_country_code(&mut self) -> Result<i32, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => {
-                stable::memory::get_user_country_code(self.process, self.state)
-            }
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn get_user_username(&mut self) -> Result<String, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::get_user_username(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn get_user_pp(&mut self) -> Result<i32, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::get_user_pp(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn get_user_rankedscore(&mut self) -> Result<i64, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::get_user_rankedscore(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn get_user_level(&mut self) -> Result<f32, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::get_user_level(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn get_user_playcount(&mut self) -> Result<i32, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::get_user_playcount(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn get_user_rank(&mut self) -> Result<i32, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::get_user_rank(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn get_user_playmode(&mut self) -> Result<i32, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::get_user_playmode(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn get_user_accuracy(&mut self) -> Result<f64, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::get_user_accuracy(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
+    impl_osu_accessor! {
+        fn id() -> i32 => stable::memory::id,
+        fn bancho_status() -> i32 => stable::memory::bancho_status,
+        fn country_code() -> i32 => stable::memory::country_code,
+        fn username() -> String => stable::memory::username,
+        fn pp() -> i32 => stable::memory::pp,
+        fn rankedscore() -> i64 => stable::memory::rankedscore,
+        fn level() -> f32 => stable::memory::level,
+        fn playcount() -> i32 => stable::memory::playcount,
+        fn rank() -> i32 => stable::memory::rank,
+        fn playmode() -> i32 => stable::memory::playmode,
+        fn accuracy() -> f64 => stable::memory::accuracy,
+        fn info() -> UserInfo => stable::memory::info,
     }
 }

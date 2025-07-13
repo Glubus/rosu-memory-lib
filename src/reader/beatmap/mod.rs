@@ -3,6 +3,7 @@ pub mod stable;
 
 use std::path::PathBuf;
 
+use crate::impl_osu_accessor;
 use crate::reader::beatmap::common::BeatmapInfo;
 use crate::reader::beatmap::common::BeatmapStarRating;
 use crate::reader::beatmap::common::BeatmapStats;
@@ -12,7 +13,6 @@ use crate::reader::common::OsuClientKind;
 use crate::reader::structs::State;
 use crate::Error;
 use rosu_mem::process::Process;
-use crate::impl_osu_accessor;
 
 pub struct BeatmapReader<'a> {
     pub process: &'a Process,

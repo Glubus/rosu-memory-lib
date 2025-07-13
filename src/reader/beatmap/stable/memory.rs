@@ -1,4 +1,5 @@
 use crate::common::GameMode;
+use crate::generate_offset_getter;
 use crate::reader::beatmap::common::{
     BeatmapInfo, BeatmapLocation, BeatmapMetadata, BeatmapStats, BeatmapStatus,
     BeatmapTechnicalInfo,
@@ -8,7 +9,6 @@ use crate::reader::helpers::{read_f32, read_i32, read_string, read_u32};
 use crate::reader::structs::State;
 use crate::Error;
 use rosu_mem::process::{Process, ProcessTraits};
-use crate::generate_offset_getter;
 
 generate_offset_getter! {
     id: i32 = read_i32(BEATMAP_OFFSET.technical.id, beatmap_addr);
@@ -35,8 +35,6 @@ generate_offset_getter! {
     mode: GameMode = read_i32(BEATMAP_OFFSET.technical.mode, beatmap_addr);
     status: BeatmapStatus = read_i32(BEATMAP_OFFSET.technical.ranked_status, beatmap_addr);
 }
-
-
 
 pub fn stats(p: &Process, state: &mut State) -> Result<BeatmapStats, Error> {
     let beatmap_addr = beatmap_addr(p, state)?;

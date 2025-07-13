@@ -1,8 +1,8 @@
+use crate::reader::common::GameMode;
+use crate::reader::structs::Hit;
 use crate::reader::structs::State;
 use crate::Error;
 use rosu_mem::process::{Process, ProcessTraits};
-use crate::reader::common::GameMode;
-use crate::reader::structs::Hit;
 
 macro_rules! generate_reader_fn {
     (
@@ -23,6 +23,7 @@ generate_reader_fn!(read_string, String, read_string);
 generate_reader_fn!(read_i16, i16, read_i16);
 generate_reader_fn!(read_i32, i32, read_i32);
 generate_reader_fn!(read_u32, u32, read_u32);
+generate_reader_fn!(read_i64, i64, read_i64);
 generate_reader_fn!(read_u64, u64, read_u64);
 generate_reader_fn!(read_f32, f32, read_f32);
 generate_reader_fn!(read_f64, f64, read_f64);
@@ -55,8 +56,6 @@ macro_rules! impl_osu_accessor {
         )*
     };
 }
-
-
 
 // TODO : idk where to put this
 #[inline]

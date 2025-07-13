@@ -22,7 +22,7 @@ impl<'a> GameplayReader<'a> {
             osu_type,
         }
     }
-    impl_osu_accessor!{
+    impl_osu_accessor! {
         fn score() -> i32 => stable::memory::score,
         fn mods() -> u32 => stable::memory::mods,
         fn combo() -> i16 => stable::memory::combo,

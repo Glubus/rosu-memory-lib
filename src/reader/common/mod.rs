@@ -1,10 +1,10 @@
 pub mod stable;
 use std::path::PathBuf;
 
+use crate::impl_osu_accessor;
 use crate::reader::structs::State;
 use crate::Error;
 use rosu_mem::process::Process;
-use crate::impl_osu_accessor;
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Default)]
 pub enum OsuClientKind {
@@ -129,8 +129,12 @@ impl<'a> CommonReader<'a> {
 
     pub fn check_game_state(&mut self, g_state: GameState) -> Result<bool, Error> {
         match self.osu_type {
-            OsuClientKind::Stable => stable::memory::check_game_state(self.process, self.state, g_state),
-            _ => Err(Error::Unsupported("Unsupported osu type for now".to_string())),
+            OsuClientKind::Stable => {
+                stable::memory::check_game_state(self.process, self.state, g_state)
+            }
+            _ => Err(Error::Unsupported(
+                "Unsupported osu type for now".to_string(),
+            )),
         }
     }
 }

@@ -1,17 +1,16 @@
 use std::path::PathBuf;
 
+use crate::generate_offset_getter;
 use crate::reader::common::stable::offset::COMMON_OFFSET;
 use crate::reader::common::GameState;
+use crate::reader::helpers::{read_i32, read_u32};
 use crate::reader::structs::State;
 use crate::Error;
 use rosu_mem::process::{Process, ProcessTraits};
-use crate::generate_offset_getter;
-use crate::reader::helpers::{read_i32, read_u32};
 
 pub fn status_addr(p: &Process, state: &mut State) -> Result<i32, Error> {
     Ok(p.read_i32(state.addresses.status - COMMON_OFFSET.status)?)
 }
-
 
 /// Returns a path to the `Songs` folder
 ///

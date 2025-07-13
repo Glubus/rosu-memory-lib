@@ -1,12 +1,15 @@
-use crate::reader::common::stable::memory::{check_game_state};
+use crate::reader::common::stable::memory::check_game_state;
 use crate::reader::common::GameState;
 use crate::reader::gameplay::common::GameplayInfo;
 use crate::reader::gameplay::stable::offset::GAMEPLAY_OFFSET;
 use crate::reader::structs::Hit;
 use crate::reader::structs::State;
 use crate::Error;
+use crate::{
+    generate_offset_getter,
+    reader::helpers::{read_f64, read_i16, read_i32, read_string, read_u64},
+};
 use rosu_mem::process::{Process, ProcessTraits};
-use crate::{generate_offset_getter, reader::helpers::{read_f64, read_i16, read_i32, read_string, read_u64}};
 
 pub fn rulesets_addr(p: &Process, state: &mut State) -> Result<i32, Error> {
     if check_game_state(p, state, GameState::Playing)? {
@@ -43,10 +46,7 @@ generate_offset_getter! {
     hits_katu: i16 = read_i16(GAMEPLAY_OFFSET.hits._katu, score_base);
 }
 
-
-
-
-/// this is a wrapper to not confuse people it could be deleted in the future 
+/// this is a wrapper to not confuse people it could be deleted in the future
 /// use -> crate::reader::common::stable::memory::game_time
 pub fn game_time(p: &Process, state: &mut State) -> Result<i32, Error> {
     crate::reader::common::stable::memory::game_time(p, state)
@@ -60,8 +60,8 @@ pub fn retries(p: &Process, state: &mut State) -> Result<i32, Error> {
 
 pub fn hits(p: &Process, state: &mut State) -> Result<Hit, Error> {
     let score_base = score_base(p, state)?;
-    // TODO: check issue for reading the full block and 
-    // separating bits 
+    // TODO: check issue for reading the full block and
+    // separating bits
     Ok(Hit {
         _300: p.read_i16(score_base + GAMEPLAY_OFFSET.hits._300)?,
         _100: p.read_i16(score_base + GAMEPLAY_OFFSET.hits._100)?,
@@ -86,7 +86,7 @@ pub fn info(p: &Process, state: &mut State) -> Result<GameplayInfo, Error> {
         hp,
         username: p.read_string(score_base + GAMEPLAY_OFFSET.username)?,
         ig_time: game_time(p, state)?, // different base
-        retries: retries(p, state)?, // different base
+        retries: retries(p, state)?,   // different base
         hits: Hit {
             _300: p.read_i16(score_base + GAMEPLAY_OFFSET.hits._300)?,
             _100: p.read_i16(score_base + GAMEPLAY_OFFSET.hits._100)?,
