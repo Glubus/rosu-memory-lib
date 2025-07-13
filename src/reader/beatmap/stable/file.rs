@@ -84,7 +84,7 @@ generate_beatmap_custom_getter_safe! {
     object_count: u32 = |b| {
         Ok(b.hit_objects.len() as u32)
     }
-    total_length: i32 = |b| {
+    length: i32 = |b| {
         let last = b.hit_objects.last().ok_or_else(|| Error::Other("Empty hitobject list".into()))?;
 
         let duration = match &last.kind {
@@ -145,7 +145,7 @@ pub fn stats(p: &Process, state: &mut State) -> Result<BeatmapStats, Error> {
         od: b.overall_difficulty,
         cs: b.circle_size,
         hp: b.hp_drain_rate,
-        total_length: total_length(p, state)?,
+        length: length(p, state)?,
         star_rating: star_rating(p, state)?,
         object_count: b.hit_objects.len() as i32,
         slider_count: b
@@ -182,7 +182,7 @@ pub fn info(p: &Process, state: &mut State) -> Result<BeatmapInfo, Error> {
             od: b.overall_difficulty,
             cs: b.circle_size,
             hp: b.hp_drain_rate,
-            total_length: drain_time(p, state)?,
+            length: length(p, state)?,
             star_rating: star_rating(p, state)?,
             object_count: b.hit_objects.len() as i32,
             slider_count: b

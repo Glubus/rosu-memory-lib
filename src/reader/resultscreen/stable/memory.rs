@@ -6,65 +6,19 @@ use crate::reader::resultscreen::stable::offset::RESULT_SCREEN_OFFSET;
 use crate::reader::structs::{Hit, State};
 use crate::Error;
 use rosu_mem::process::{Process, ProcessTraits};
+use crate::generate_offset_getter;
+use crate::reader::helpers::{calculate_accuracy, read_i16, read_i32, read_string};
 
-pub(crate) fn get_score_base(p: &Process, state: &mut State) -> Result<i32, Error> {
+pub fn result_screen_ptr(p: &Process, state: &mut State) -> Result<i32, Error> {
     if check_game_state(p, state, GameState::ResultScreen)? {
-        let ruleset_addr = match p.read_i32(state.addresses.rulesets - RESULT_SCREEN_OFFSET.ptr) {
-            Ok(val) => val,
-            Err(_) => return Err(Error::NotAvailable("Still loading".to_string())),
-        };
-        let ruleset_addr = match p.read_i32(ruleset_addr + RESULT_SCREEN_OFFSET.addr) {
-            Ok(val) => val,
-            Err(_) => return Err(Error::NotAvailable("Still loading".to_string())),
-        };
-        Ok(p.read_i32(ruleset_addr + RESULT_SCREEN_OFFSET.score_base)?)
+        Ok(p.read_i32(state.addresses.rulesets - RESULT_SCREEN_OFFSET.ptr)?)
     } else {
         Err(Error::NotAvailable("Not in ResultScreen".to_string()))
     }
 }
 
-pub fn get_result_username(p: &Process, state: &mut State) -> Result<String, Error> {
-    let score_base = get_score_base(p, state)?;
-    Ok(p.read_string(score_base + RESULT_SCREEN_OFFSET.username)?)
-}
-pub fn get_result_score(p: &Process, state: &mut State) -> Result<i32, Error> {
-    let score_base = get_score_base(p, state)?;
-    Ok(p.read_i32(score_base + RESULT_SCREEN_OFFSET.score)?)
-}
-pub fn get_result_mode(p: &Process, state: &mut State) -> Result<GameMode, Error> {
-    let score_base = get_score_base(p, state)?;
-    Ok(GameMode::from(
-        p.read_i32(score_base + RESULT_SCREEN_OFFSET.mode)?,
-    ))
-}
-
-pub fn get_result_hit_300(p: &Process, state: &mut State) -> Result<i16, Error> {
-    let score_base = get_score_base(p, state)?;
-    Ok(p.read_i16(score_base + RESULT_SCREEN_OFFSET.hits._300)?)
-}
-pub fn get_result_hit_100(p: &Process, state: &mut State) -> Result<i16, Error> {
-    let score_base = get_score_base(p, state)?;
-    Ok(p.read_i16(score_base + RESULT_SCREEN_OFFSET.hits._100)?)
-}
-pub fn get_result_hit_50(p: &Process, state: &mut State) -> Result<i16, Error> {
-    let score_base = get_score_base(p, state)?;
-    Ok(p.read_i16(score_base + RESULT_SCREEN_OFFSET.hits._50)?)
-}
-pub fn get_result_hit_geki(p: &Process, state: &mut State) -> Result<i16, Error> {
-    let score_base = get_score_base(p, state)?;
-    Ok(p.read_i16(score_base + RESULT_SCREEN_OFFSET.hits._geki)?)
-}
-pub fn get_result_hit_katu(p: &Process, state: &mut State) -> Result<i16, Error> {
-    let score_base = get_score_base(p, state)?;
-    Ok(p.read_i16(score_base + RESULT_SCREEN_OFFSET.hits._katu)?)
-}
-pub fn get_result_hit_miss(p: &Process, state: &mut State) -> Result<i16, Error> {
-    let score_base = get_score_base(p, state)?;
-    Ok(p.read_i16(score_base + RESULT_SCREEN_OFFSET.hits._miss)?)
-}
-
-pub fn get_result_hits(p: &Process, state: &mut State) -> Result<Hit, Error> {
-    let score_base = get_score_base(p, state)?;
+pub fn hits(p: &Process, state: &mut State) -> Result<Hit, Error> {
+    let score_base = result_screen_base(p, state)?;
     Ok(Hit {
         _300: p.read_i16(score_base + RESULT_SCREEN_OFFSET.hits._300)?,
         _100: p.read_i16(score_base + RESULT_SCREEN_OFFSET.hits._100)?,
@@ -74,53 +28,39 @@ pub fn get_result_hits(p: &Process, state: &mut State) -> Result<Hit, Error> {
         _katu: p.read_i16(score_base + RESULT_SCREEN_OFFSET.hits._katu)?,
     })
 }
-fn calculate_accuracy(gamemode: &GameMode, hit: &Hit) -> Result<f64, Error> {
-    let (numerator, denominator) = match gamemode {
-        GameMode::Osu => (
-            hit._300 as f64 * 6.0 + hit._100 as f64 * 2.0 + hit._50 as f64,
-            (hit._300 + hit._100 + hit._50 + hit._miss) as f64 * 6.0,
-        ),
-        GameMode::Taiko => (
-            hit._300 as f64 * 2.0 + hit._100 as f64,
-            (hit._300 + hit._100 + hit._50 + hit._miss) as f64 * 2.0,
-        ),
-        GameMode::Catch => (
-            (hit._300 + hit._100 + hit._50) as f64,
-            (hit._300 + hit._100 + hit._50 + hit._katu + hit._miss) as f64,
-        ),
-        GameMode::Mania => (
-            (hit._geki + hit._300) as f64 * 6.0
-                + hit._katu as f64 * 4.0
-                + hit._100 as f64 * 2.0
-                + hit._50 as f64,
-            (hit._geki + hit._300 + hit._katu + hit._100 + hit._50 + hit._miss) as f64 * 6.0,
-        ),
-        _ => (0.0, 0.0),
-    };
 
-    Ok((numerator / denominator) * 100.0)
+pub fn accuracy(p: &Process, state: &mut State) -> Result<f64, Error> {
+    calculate_accuracy(&mode(p, state)?, &hits(p, state)?)
 }
 
-pub fn get_result_accuracy(p: &Process, state: &mut State) -> Result<f64, Error> {
-    calculate_accuracy(&get_result_mode(p, state)?, &get_result_hits(p, state)?)
-}
-pub fn get_result_max_combo(p: &Process, state: &mut State) -> Result<i16, Error> {
-    let score_base = get_score_base(p, state)?;
-    Ok(p.read_i16(score_base + RESULT_SCREEN_OFFSET.max_combo)?)
+generate_offset_getter! {
+    result_screen_addr: i32 = read_i32(RESULT_SCREEN_OFFSET.addr, result_screen_ptr);
+    result_screen_base: i32 = read_i32(RESULT_SCREEN_OFFSET.base, result_screen_addr);
+    username: String = read_string(RESULT_SCREEN_OFFSET.username, result_screen_base);
+    score: i32 = read_i32(RESULT_SCREEN_OFFSET.score, result_screen_base);
+    max_combo: i16 = read_i16(RESULT_SCREEN_OFFSET.max_combo, result_screen_base);
+    mode: GameMode = read_i32(RESULT_SCREEN_OFFSET.mode, result_screen_base);
+    hits_300: i16 = read_i16(RESULT_SCREEN_OFFSET.hits._300, result_screen_base);
+    hits_100: i16 = read_i16(RESULT_SCREEN_OFFSET.hits._100, result_screen_base);
+    hits_50: i16 = read_i16(RESULT_SCREEN_OFFSET.hits._50, result_screen_base);
+    hits_miss: i16 = read_i16(RESULT_SCREEN_OFFSET.hits._miss, result_screen_base);
+    hits_geki: i16 = read_i16(RESULT_SCREEN_OFFSET.hits._geki, result_screen_base);
+    hits_katu: i16 = read_i16(RESULT_SCREEN_OFFSET.hits._katu, result_screen_base);
 }
 
-pub fn get_result_screen_info(p: &Process, state: &mut State) -> Result<ResultScreenInfo, Error> {
-    let score_base = get_score_base(p, state)?;
 
-    let hit = get_result_hits(p, state)?;
-    let mode = get_result_mode(p, state)?;
-    let accuracy = calculate_accuracy(&mode, &hit)?;
+
+pub fn info(p: &Process, state: &mut State) -> Result<ResultScreenInfo, Error> {
+    let hits = hits(p, state)?;
+    let mode = mode(p, state)?;
+    let accuracy = calculate_accuracy(&mode, &hits)?;
+    let base = result_screen_base(p, state)?;
     Ok(ResultScreenInfo {
-        username: p.read_string(score_base + RESULT_SCREEN_OFFSET.username)?,
+        username: p.read_string(base + RESULT_SCREEN_OFFSET.username)?,
         mode,
-        max_combo: p.read_i16(score_base + RESULT_SCREEN_OFFSET.max_combo)?,
-        score: p.read_i32(score_base + RESULT_SCREEN_OFFSET.score)?,
-        hit,
+        max_combo: p.read_i16(base + RESULT_SCREEN_OFFSET.max_combo)?,
+        score: p.read_i32(base + RESULT_SCREEN_OFFSET.score)?,
+        hits,
         accuracy,
     })
 }

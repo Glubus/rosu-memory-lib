@@ -102,12 +102,15 @@ fn process_game_state(
     match path(process, state) {
         Ok(beatmap_path) => {
             // Update mods if they changed
+            println!("Menu game mode: {}", menu_game_mode(process, state)?);
             if let Ok(new_mods) = menu_game_mode(process, state) {
                 mods_changed = calc_state.update_mods(new_mods as i32);
             } 
 
             // Update beatmap if path changed and mods changed else it's useless to recalculate
-            if calc_state.update_beatmap(beatmap_path)? && mods_changed {
+            let beatmap_updated = calc_state.update_beatmap(beatmap_path)?;
+            
+            if beatmap_updated || mods_changed {
                 calc_state.update_pp();
             }
         }

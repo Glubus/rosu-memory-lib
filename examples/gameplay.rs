@@ -67,7 +67,7 @@ fn main() -> Result<(), Error> {
             Ok(max_combo) => println!("Current max combo: {max_combo}"),
             Err(e) => println!("Error: {e:?}"),
         }
-        match gameplay_reader.gameplay_info() {
+        match gameplay_reader.info() {
             Ok(gameplay_info) => println!("Current gameplay info: {gameplay_info:?}"),
             Err(e) => println!("Error: {e:?}"),
         }

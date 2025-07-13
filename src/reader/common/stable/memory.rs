@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use crate::reader::common::stable::offset::COMMON_OFFSET;
-use crate::reader::common::{GameMode, GameState};
+use crate::reader::common::GameState;
 use crate::reader::structs::State;
 use crate::Error;
 use rosu_mem::process::{Process, ProcessTraits};
@@ -45,7 +45,7 @@ pub fn playtime_addr(p: &Process, state: &mut State) -> Result<i32, Error> {
 
 generate_offset_getter! {
     game_state: GameState = read_u32(0, status_addr);
-    menu_game_mode: GameMode = read_i32(COMMON_OFFSET.mods_ptr, menu_mods_addr);
+    menu_game_mode: u32 = read_u32(0, menu_mods_addr); // TODO: use GameModsLegacy
     game_time: i32 = read_i32(0, playtime_addr);
 }
 

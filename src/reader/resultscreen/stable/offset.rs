@@ -1,7 +1,7 @@
 pub struct ResultScreenOffset {
     pub ptr: i32,
     pub addr: i32,
-    pub score_base: i32,
+    pub base: i32,
     pub username: i32,
     pub score: i32,
     pub max_combo: i32,
@@ -12,7 +12,7 @@ pub struct ResultScreenOffset {
 pub(crate) const RESULT_SCREEN_OFFSET: ResultScreenOffset = ResultScreenOffset {
     ptr: 0xb,
     addr: 0x4,
-    score_base: 0x38,
+    base: 0x38,
     username: 0x28,
     score: 0x78,
     max_combo: 0x68,

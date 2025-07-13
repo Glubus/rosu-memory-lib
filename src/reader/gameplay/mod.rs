@@ -1,6 +1,7 @@
 pub mod common;
 pub mod stable;
 
+use crate::impl_osu_accessor;
 use crate::reader::common::OsuClientKind;
 use crate::reader::gameplay::common::GameplayInfo;
 use crate::reader::structs::Hit;
@@ -21,148 +22,23 @@ impl<'a> GameplayReader<'a> {
             osu_type,
         }
     }
+    impl_osu_accessor!{
+        fn score() -> i32 => stable::memory::score,
+        fn mods() -> u32 => stable::memory::mods,
+        fn combo() -> i16 => stable::memory::combo,
+        fn max_combo() -> i16 => stable::memory::max_combo,
+        fn hp() -> f64 => stable::memory::hp,
+        fn username() -> String => stable::memory::username,
+        fn game_time() -> i32 => stable::memory::game_time,
+        fn retries() -> i32 => stable::memory::retries,
+        fn hits() -> Hit => stable::memory::hits,
+        fn hits_300() -> i16 => stable::memory::hits_300,
+        fn hits_100() -> i16 => stable::memory::hits_100,
+        fn hits_50() -> i16 => stable::memory::hits_50,
+        fn hits_miss() -> i16 => stable::memory::hits_miss,
+        fn hits_geki() -> i16 => stable::memory::hits_geki,
+        fn hits_katu() -> i16 => stable::memory::hits_katu,
+        fn info() -> GameplayInfo => stable::memory::info,
 
-    pub fn score(&mut self) -> Result<i32, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::score(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn mods(&mut self) -> Result<u32, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::mods(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn combo(&mut self) -> Result<i16, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::combo(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn max_combo(&mut self) -> Result<i16, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::max_combo(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn hp(&mut self) -> Result<f64, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::hp(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn username(&mut self) -> Result<String, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::username(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn game_time(&mut self) -> Result<i32, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => crate::reader::common::stable::memory::game_time(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn retries(&mut self) -> Result<i32, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::retries(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn hits_300(&mut self) -> Result<i16, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::hits_300(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn hits_100(&mut self) -> Result<i16, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::hits_100(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn hits_50(&mut self) -> Result<i16, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::hits_50(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn hits_miss(&mut self) -> Result<i16, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::hits_miss(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn hits_geki(&mut self) -> Result<i16, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::hits_geki(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn hits_katu(&mut self) -> Result<i16, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::hits_katu(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn hits(&mut self) -> Result<Hit, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::hits(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
-    }
-
-    pub fn gameplay_info(&mut self) -> Result<GameplayInfo, Error> {
-        match self.osu_type {
-            OsuClientKind::Stable => stable::memory::info(self.process, self.state),
-            _ => Err(Error::Unsupported(
-                "Unsupported osu type for now".to_string(),
-            )),
-        }
     }
 }
