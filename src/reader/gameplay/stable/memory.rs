@@ -23,12 +23,12 @@ pub fn mods(p: &Process, state: &mut State) -> Result<u32, Error> {
 }
 
 generate_offset_getter! {
-    ruleset_addr: i32 = read_i32(GAMEPLAY_OFFSET.ptr, rulesets_addr);
+    ruleset_addr: i32 = read_i32(GAMEPLAY_OFFSET.addr, rulesets_addr);
     gameplay_base: i32 = read_i32(GAMEPLAY_OFFSET.base, ruleset_addr);
     score_base: i32 = read_i32(GAMEPLAY_OFFSET.score_base, gameplay_base);
     hp_base: i32 = read_i32(GAMEPLAY_OFFSET.hp_base, gameplay_base);
     score: i32 = read_i32(GAMEPLAY_OFFSET.score, score_base);
-    mods_xor_base: i32 = read_i32(GAMEPLAY_OFFSET.mods, gameplay_base);
+    mods_xor_base: i32 = read_i32(GAMEPLAY_OFFSET.mods, score_base);
     mods_xor1: u64 = read_u64(GAMEPLAY_OFFSET.mods_xor, mods_xor_base);
     mods_xor2: u64 = read_u64(GAMEPLAY_OFFSET.mods_xor2, mods_xor_base);
     combo: i16 = read_i16(GAMEPLAY_OFFSET.combo, score_base);
@@ -73,10 +73,9 @@ pub fn hits(p: &Process, state: &mut State) -> Result<Hit, Error> {
 }
 
 pub fn info(p: &Process, state: &mut State) -> Result<GameplayInfo, Error> {
-    let gameplay_base = gameplay_base(p, state)?;
     let score_base = score_base(p, state)?;
 
-    let hp = p.read_f64(p.read_i32(gameplay_base + GAMEPLAY_OFFSET.hp_base)? + GAMEPLAY_OFFSET.hp)?;
+    let hp = hp(p, state)?;
     let mods = mods(p, state)?;
 
     Ok(GameplayInfo {

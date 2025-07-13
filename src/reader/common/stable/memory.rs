@@ -44,7 +44,7 @@ pub fn playtime_addr(p: &Process, state: &mut State) -> Result<i32, Error> {
 }
 
 generate_offset_getter! {
-    game_state: GameState = read_u32(COMMON_OFFSET.status, status_addr);
+    game_state: GameState = read_u32(0, status_addr);
     menu_game_mode: GameMode = read_i32(COMMON_OFFSET.mods_ptr, menu_mods_addr);
     game_time: i32 = read_i32(0, playtime_addr);
 }
