@@ -15,15 +15,16 @@ pub struct UserProfileOffset {
 
 pub(crate) const USER_PROFILE_OFFSET: UserProfileOffset = UserProfileOffset {
     ptr: 0x7,
-    id: 0x70,
-    username: 0x30,
-    pp: 0x88,
-    rankedscore: 0xC,
-    level: 0x74,
-    playcount: 0x7C,
-    rank: 0x84,
-    playmode: 0x80,
     accuracy: 0x4,
+    rankedscore: 0xC,
+    username: 0x30,
+    id: 0x70,
+    level: 0x74,
+    playcount: 0x7C, // start read
+    playmode: 0x80,
+    rank: 0x84,
+    pp: 0x88,
+    bancho_status: 0x8c, // end read
     country_code: 0x9c,
-    bancho_status: 0x8c,
+
 };

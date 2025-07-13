@@ -38,12 +38,19 @@ generate_offset_getter! {
 
 pub fn stats(p: &Process, state: &mut State) -> Result<BeatmapStats, Error> {
     let beatmap_addr = beatmap_addr(p, state)?;
-    // faster than using read_fn because we dont need to reload addr everytime
+    let mut buffer = [0u8; size_of::<f32>() * 4];
+    p.read(
+        beatmap_addr + 0x2c,
+        size_of::<f32>() * 4,
+        &mut buffer,
+    )?;
+
+
     Ok(BeatmapStats {
-        ar: p.read_f32(beatmap_addr + BEATMAP_OFFSET.stats.ar)?,
-        od: p.read_f32(beatmap_addr + BEATMAP_OFFSET.stats.od)?,
-        cs: p.read_f32(beatmap_addr + BEATMAP_OFFSET.stats.cs)?,
-        hp: p.read_f32(beatmap_addr + BEATMAP_OFFSET.stats.hp)?,
+        ar: f32::from_le_bytes(buffer[0..4].try_into().unwrap()),
+        cs: f32::from_le_bytes(buffer[4..8].try_into().unwrap()),
+        hp: f32::from_le_bytes(buffer[8..12].try_into().unwrap()),
+        od: f32::from_le_bytes(buffer[12..].try_into().unwrap()),
         length: p.read_i32(beatmap_addr + BEATMAP_OFFSET.stats.total_length)?,
         star_rating: crate::reader::beatmap::stable::file::star_rating(p, state)?,
         object_count: p.read_i32(beatmap_addr + BEATMAP_OFFSET.stats.object_count)?,
@@ -53,7 +60,25 @@ pub fn stats(p: &Process, state: &mut State) -> Result<BeatmapStats, Error> {
 
 pub fn info(p: &Process, state: &mut State) -> Result<BeatmapInfo, Error> {
     let beatmap_addr = beatmap_addr(p, state)?;
-    // done like that to be more efficient reading the string one by one would need to reload addr everytime which cost more
+
+    let mut buffer = [0u8; size_of::<f32>() * 4];
+    p.read(
+        beatmap_addr + 0x2c,
+        size_of::<f32>() * 4,
+        &mut buffer,
+    )?;
+
+
+    let stats =BeatmapStats {
+        ar: f32::from_le_bytes(buffer[0..4].try_into().unwrap()),
+        cs: f32::from_le_bytes(buffer[4..8].try_into().unwrap()),
+        hp: f32::from_le_bytes(buffer[8..12].try_into().unwrap()),
+        od: f32::from_le_bytes(buffer[12..].try_into().unwrap()),
+        length: p.read_i32(beatmap_addr + BEATMAP_OFFSET.stats.total_length)?,
+        star_rating: crate::reader::beatmap::stable::file::star_rating(p, state)?,
+        object_count: p.read_i32(beatmap_addr + BEATMAP_OFFSET.stats.object_count)?,
+        slider_count: p.read_i32(beatmap_addr + BEATMAP_OFFSET.stats.slider_count)?,
+    };
     Ok(BeatmapInfo {
         technical: BeatmapTechnicalInfo {
             md5: p.read_string(beatmap_addr + BEATMAP_OFFSET.technical.md5)?,
@@ -73,16 +98,7 @@ pub fn info(p: &Process, state: &mut State) -> Result<BeatmapInfo, Error> {
             difficulty: p.read_string(beatmap_addr + BEATMAP_OFFSET.metadata.difficulty)?,
             tags: p.read_string(beatmap_addr + BEATMAP_OFFSET.metadata.tags)?,
         },
-        stats: BeatmapStats {
-            ar: p.read_f32(beatmap_addr + BEATMAP_OFFSET.stats.ar)?,
-            od: p.read_f32(beatmap_addr + BEATMAP_OFFSET.stats.od)?,
-            cs: p.read_f32(beatmap_addr + BEATMAP_OFFSET.stats.cs)?,
-            hp: p.read_f32(beatmap_addr + BEATMAP_OFFSET.stats.hp)?,
-            length: p.read_i32(beatmap_addr + BEATMAP_OFFSET.stats.total_length)?,
-            star_rating: crate::reader::beatmap::stable::file::star_rating(p, state)?,
-            object_count: p.read_i32(beatmap_addr + BEATMAP_OFFSET.stats.object_count)?,
-            slider_count: p.read_i32(beatmap_addr + BEATMAP_OFFSET.stats.slider_count)?,
-        },
+        stats,
         location: BeatmapLocation {
             folder: p.read_string(beatmap_addr + BEATMAP_OFFSET.location.folder)?,
             filename: p.read_string(beatmap_addr + BEATMAP_OFFSET.location.filename)?,

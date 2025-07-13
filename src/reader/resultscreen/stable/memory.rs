@@ -19,13 +19,23 @@ pub fn result_screen_ptr(p: &Process, state: &mut State) -> Result<i32, Error> {
 
 pub fn hits(p: &Process, state: &mut State) -> Result<Hit, Error> {
     let score_base = result_screen_base(p, state)?;
+    // Read all hits data in one memory operation
+    let mut hits_buffer = [0u8; size_of::<i16>() * 6];
+    p.read(
+        score_base + RESULT_SCREEN_OFFSET.hits._100,
+        size_of::<i16>() * 6,
+        &mut hits_buffer,
+    )?;
+
+    // Safety: unwrap here because buffer is already initialized and filled
+    // with zeros, the worst case scenario is hits going to be zeros
     Ok(Hit {
-        _300: p.read_i16(score_base + RESULT_SCREEN_OFFSET.hits._300)?,
-        _100: p.read_i16(score_base + RESULT_SCREEN_OFFSET.hits._100)?,
-        _50: p.read_i16(score_base + RESULT_SCREEN_OFFSET.hits._50)?,
-        _miss: p.read_i16(score_base + RESULT_SCREEN_OFFSET.hits._miss)?,
-        _geki: p.read_i16(score_base + RESULT_SCREEN_OFFSET.hits._geki)?,
-        _katu: p.read_i16(score_base + RESULT_SCREEN_OFFSET.hits._katu)?,
+        _100: i16::from_le_bytes(hits_buffer[0..2].try_into().unwrap()),
+        _300: i16::from_le_bytes(hits_buffer[2..4].try_into().unwrap()),
+        _50: i16::from_le_bytes(hits_buffer[4..6].try_into().unwrap()),
+        _geki: i16::from_le_bytes(hits_buffer[6..8].try_into().unwrap()),
+        _katu: i16::from_le_bytes(hits_buffer[8..10].try_into().unwrap()),
+        _miss: i16::from_le_bytes(hits_buffer[10..12].try_into().unwrap()),
     })
 }
 

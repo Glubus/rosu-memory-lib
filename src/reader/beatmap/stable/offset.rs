@@ -13,9 +13,9 @@ pub(crate) const BEATMAP_LOCATION_OFFSET: BeatmapLocationOffset = BeatmapLocatio
 
 pub(crate) const BEATMAP_STATS_OFFSET: BeatmapStatsOffset = BeatmapStatsOffset {
     ar: 0x2c,
-    od: 0x30,
-    cs: 0x34,
-    hp: 0x38,
+    cs: 0x30,
+    hp: 0x34,
+    od: 0x38,
     object_count: 0xf8,
     total_length: 0x134,
     drain_time: 0x0,  // TODO

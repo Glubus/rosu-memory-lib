@@ -54,10 +54,6 @@ fn main() -> Result<(), Error> {
         Ok(level) => println!("Current level: {level}"),
         Err(e) => println!("Error: {e:?}"),
     }
-    match user_reader.playmode() {
-        Ok(playmode) => println!("Current playmode: {playmode}"),
-        Err(e) => println!("Error: {e:?}"),
-    }
 
     Ok(())
 }

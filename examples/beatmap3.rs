@@ -110,5 +110,13 @@ fn main() -> Result<(), Error> {
         Ok(star_rating) => println!("Current beatmap star rating: {star_rating:?}"),
         Err(e) => println!("Error: {e:?}"),
     }
+    match beatmap_reader.info() {
+        Ok(info) => println!("Current beatmap info: {info:?}"),
+        Err(e) => println!("Error: {e:?}"),
+    }
+    match beatmap_reader.stats() {
+        Ok(stats) => println!("Current beatmap stats: {stats:?}"),
+        Err(e) => println!("Error: {e:?}"),
+    }
     Ok(())
 }
