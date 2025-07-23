@@ -2,11 +2,23 @@ use crate::reader::structs::State;
 use crate::Error;
 use rosu_mem::process::{Process, ProcessTraits};
 use crate::reader::overlay::common::{Key, KeyOverlay};
+use crate::reader::common::stable::memory::check_game_state;
+use crate::reader::common::GameState;
+use crate::reader::user::stable::memory::playmode;
+use crate::reader::beatmap::stable::memory::mode;
+use crate::reader::common::GameMode;
 
 pub fn ruleset_addr(p: &Process, state: &mut State) -> Result<i32, Error> {
-    let ruleset_ptr = p.read_i32(state.addresses.rulesets - 0xb)?;
-    let ruleset_addr = p.read_i32(ruleset_ptr + 0x4)?;
-    Ok(ruleset_addr)
+    if check_game_state(p, state, GameState::Playing)? && playmode(p, state)? == 0
+    && mode(p, state)? == GameMode::Osu
+    {
+        let ruleset_ptr = p.read_i32(state.addresses.rulesets - 0xb)?;
+        let ruleset_addr = p.read_i32(ruleset_ptr + 0x4)?;
+        Ok(ruleset_addr)
+    }
+    else {
+        Err(Error::NotAvailable("Not Playing".to_string()))
+    }
 }
 
 pub fn key_ptr(p: &Process, state: &mut State) -> Result<i32, Error> {
