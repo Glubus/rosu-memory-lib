@@ -1,8 +1,9 @@
+#[derive(Debug, Clone, Copy)]
 pub struct Key {
-    pub pressed: i32,
+    pub pressed: bool,
     pub count: i32,
 }
-
+#[derive(Debug, Clone, Copy)]
 pub struct KeyOverlay {
     pub key_1: Key,
     pub key_2: Key,
