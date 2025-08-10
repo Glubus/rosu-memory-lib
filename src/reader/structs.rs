@@ -24,6 +24,7 @@ pub struct StaticAddresses {
     pub ig_time_base: i32,
     pub settings: i32,
     pub user_profile: i32,
+    pub check_replay_addr: i32,
 }
 
 #[derive(Debug, Default, Clone)]
@@ -49,6 +50,7 @@ pub(crate) struct SignatureBase {
     ig_time_base_sig: &'static str,
     settings_sig: &'static str,
     user_profile_sig: &'static str,
+    check_replay_addr: &'static str,
 }
 
 pub(crate) const SIGNATURES: SignatureBase = SignatureBase {
@@ -58,11 +60,12 @@ pub(crate) const SIGNATURES: SignatureBase = SignatureBase {
     rulesets_sig: "7D 15 A1 ?? ?? ?? ?? 85 C0",
     playtime_sig: "5E 5F 5D C3 A1 ?? ?? ?? ?? 89 ?? 04",
     skin_sig: "74 2C 85 FF 75 28 A1 ?? ?? ?? ?? 8D 15", 
-    chat_checker_sig: "8B CE 83 3D ?? ?? ?? ?? 00 75 ?? 8", // need to use 0x4 offset
+    chat_checker_sig: "0A D7 23 3C 00 00 ?? 01", // modified back again caused crash 
     audio_time_base_sig: "55 8B EC 83 EC 08 A1 ?? ?? ?? ?? 85 C0", // need to use  0x7 offset
     ig_time_base_sig: "EB 0A A1 ?? ?? ?? ?? A3",
     settings_sig: "83 E0 20 85 C0 7E 2F",
     user_profile_sig: "FF 15 ?? ?? ?? ?? A1 ?? ?? ?? ?? 8B 48 54 33 D2",
+    check_replay_addr: "55 8B EC 80 3D ?? ?? ?? ?? 00 75 26 80 3D",
 };
 
 impl StaticAddresses {
@@ -99,6 +102,7 @@ impl StaticAddresses {
             ("ig_time_base", SIGNATURES.ig_time_base_sig),
             ("settings", SIGNATURES.settings_sig),
             ("user_profile", SIGNATURES.user_profile_sig),
+            ("check_replay_addr", SIGNATURES.check_replay_addr),
         ];
 
         let results: HashMap<&str, i32> = signatures
@@ -124,6 +128,7 @@ impl StaticAddresses {
             ig_time_base: results["ig_time_base"],
             settings: results["settings"],
             user_profile: results["user_profile"],
+            check_replay_addr: results["check_replay_addr"],
         })
     }
 
@@ -141,6 +146,7 @@ impl StaticAddresses {
             ("ig_time_base", SIGNATURES.ig_time_base_sig),
             ("settings", SIGNATURES.settings_sig),
             ("user_profile", SIGNATURES.user_profile_sig),
+            ("check_replay_addr", SIGNATURES.check_replay_addr),
         ];
 
         let mut results = HashMap::new();
@@ -164,6 +170,7 @@ impl StaticAddresses {
             ig_time_base: results["ig_time_base"],
             settings: results["settings"],
             user_profile: results["user_profile"],
+            check_replay_addr: results["check_replay_addr"],
         })
     }
 }

@@ -42,6 +42,10 @@ pub fn playtime_addr(p: &Process, state: &mut State) -> Result<i32, Error> {
     Ok(p.read_i32(state.addresses.playtime + COMMON_OFFSET.ig_time)?)
 }
 
+pub fn is_watching_replay(p: &Process, state: &mut State) -> Result<bool, Error> {
+    Ok(p.read_u8(p.read_i32(state.addresses.check_replay_addr + COMMON_OFFSET.check_replay)?)? == 1)
+}
+
 generate_offset_getter! {
     game_state: GameState = read_u32(0, status_addr);
     menu_game_mode: u32 = read_u32(0, menu_mods_addr); // TODO: use GameModsLegacy

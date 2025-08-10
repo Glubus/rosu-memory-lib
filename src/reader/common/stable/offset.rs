@@ -5,6 +5,7 @@ pub struct CommonOffset {
     pub status: i32,
     pub mods_ptr: i32,
     pub ig_time: i32,
+    pub check_replay: i32,
 }
 
 pub(crate) const COMMON_OFFSET: CommonOffset = CommonOffset {
@@ -14,4 +15,5 @@ pub(crate) const COMMON_OFFSET: CommonOffset = CommonOffset {
     status: 0x4,
     mods_ptr: 0x9,
     ig_time: 0x5,
+    check_replay: 0x46,
 };
