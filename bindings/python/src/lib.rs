@@ -1,6 +1,7 @@
 use pyo3::prelude::*;
 mod reader;
 mod common;
+mod macros;
 
 use common::{PyProcess, PyState};
 use reader::beatmap::stable::memory::get_beatmap_info;

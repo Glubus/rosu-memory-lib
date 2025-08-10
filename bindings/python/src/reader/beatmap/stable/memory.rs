@@ -6,186 +6,45 @@ use rosu_memory_lib::reader::beatmap::common::BeatmapStarRating;
 use rosu_memory_lib::reader::beatmap::common::BeatmapMetadata;
 use rosu_memory_lib::reader::beatmap::common::BeatmapTechnicalInfo;
 use crate::common::{PyProcess, PyState};
+use crate::{py_struct, py_struct_numeric, py_struct_main, py_from_impl_direct, py_getters};
 
-#[pyclass]
-#[derive(Debug)]
-pub struct PyBeatmapInfo {
-    pub metadata: PyBeatmapMetadata,
-    pub location: PyBeatmapLocation,
-    pub stats: PyBeatmapStats,
-    pub technical: PyBeatmapTechnicalInfo,
-}
-
-#[pymethods]
-impl PyBeatmapInfo {
-    #[getter]
-    fn metadata(&self) -> PyResult<PyBeatmapMetadata> {
-        Ok(PyBeatmapMetadata::from(self.metadata.clone()))
-    }
-
-    #[getter]
-    fn location(&self) -> PyResult<PyBeatmapLocation> {
-        Ok(PyBeatmapLocation::from(self.location.clone()))
-    }
-
-    #[getter]
-    fn stats(&self) -> PyResult<PyBeatmapStats> {
-        Ok(PyBeatmapStats::from(self.stats.clone()))
-    }
-
-    #[getter]
-    fn technical(&self) -> PyResult<PyBeatmapTechnicalInfo> {
-        Ok(PyBeatmapTechnicalInfo::from(self.technical.clone()))
+// Structures avec champs String (nécessitent clone)
+py_struct! {
+    #[pyclass]
+    pub struct PyBeatmapMetadata {
+        author: String,
+        creator: String,
+        title_romanized: String,
+        title_original: String,
+        difficulty: String,
+        tags: String,
     }
 }
 
-impl From<BeatmapInfo> for PyBeatmapInfo {
-    fn from(info: BeatmapInfo) -> Self {
-        PyBeatmapInfo {
-            metadata: PyBeatmapMetadata::from(info.metadata),
-            location: PyBeatmapLocation::from(info.location),
-            stats: PyBeatmapStats::from(info.stats),
-            technical: PyBeatmapTechnicalInfo::from(info.technical),
-        }
+py_struct! {
+    #[pyclass]
+    pub struct PyBeatmapLocation {
+        folder: String,
+        filename: String,
+        audio: String,
+        cover: String,
     }
 }
 
-#[pyclass]
-#[derive(Debug, Clone)]
-pub struct PyBeatmapMetadata {
-    pub author: String,
-    pub creator: String,
-    pub title_romanized: String,
-    pub title_original: String,
-    pub difficulty: String,
-    pub tags: String,
-}
-
-#[pymethods]
-impl PyBeatmapMetadata {
-    #[getter]
-    fn author(&self) -> PyResult<String> {
-        Ok(self.author.clone())
-    }
-
-    #[getter]
-    fn creator(&self) -> PyResult<String> {
-        Ok(self.creator.clone())
-    }
-
-    #[getter]
-    fn title_romanized(&self) -> PyResult<String> {
-        Ok(self.title_romanized.clone())
-    }
-
-    #[getter]
-    fn title_original(&self) -> PyResult<String> {
-        Ok(self.title_original.clone())
-    }
-
-    #[getter]
-    fn difficulty(&self) -> PyResult<String> {
-        Ok(self.difficulty.clone())
-    }
-
-    #[getter]
-    fn tags(&self) -> PyResult<String> {
-        Ok(self.tags.clone())
+// Structures avec champs numériques (pas de clone nécessaire)
+py_struct_numeric! {
+    #[pyclass]
+    pub struct PyBeatmapStarRating {
+        no_mod: f64,
+        dt: f64,
+        ht: f64,
     }
 }
 
-impl From<BeatmapMetadata> for PyBeatmapMetadata {
-    fn from(metadata: BeatmapMetadata) -> Self {
-        PyBeatmapMetadata {
-            author: metadata.author,
-            creator: metadata.creator,
-            title_romanized: metadata.title_romanized,
-            title_original: metadata.title_original,
-            difficulty: metadata.difficulty,
-            tags: metadata.tags,
-        }
-    }
-}
+// Implémenter Copy pour PyBeatmapStarRating
+impl Copy for PyBeatmapStarRating {}
 
-#[pyclass]
-#[derive(Debug, Clone)]
-pub struct PyBeatmapLocation {
-    pub folder: String,
-    pub filename: String,
-    pub audio: String,
-    pub cover: String,
-}
-
-#[pymethods]
-impl PyBeatmapLocation {
-    #[getter]
-    fn folder(&self) -> PyResult<String> {
-        Ok(self.folder.clone())
-    }
-
-    #[getter]
-    fn filename(&self) -> PyResult<String> {
-        Ok(self.filename.clone())
-    }
-
-    #[getter]
-    fn audio(&self) -> PyResult<String> {
-        Ok(self.audio.clone())
-    }
-
-    #[getter]
-    fn cover(&self) -> PyResult<String> {
-        Ok(self.cover.clone())
-    }
-}
-
-impl From<BeatmapLocation> for PyBeatmapLocation {
-    fn from(location: BeatmapLocation) -> Self {
-        PyBeatmapLocation {
-            folder: location.folder,
-            filename: location.filename,
-            audio: location.audio,
-            cover: location.cover,
-        }
-    }
-}
-
-#[pyclass]
-#[derive(Debug, Clone)]
-pub struct PyBeatmapStarRating {
-    pub no_mod: f64,
-    pub dt: f64,
-    pub ht: f64,
-}
-
-#[pymethods]
-impl PyBeatmapStarRating {
-    #[getter]
-    fn no_mod(&self) -> PyResult<f64> {
-        Ok(self.no_mod)
-    }
-
-    #[getter]
-    fn dt(&self) -> PyResult<f64> {
-        Ok(self.dt)
-    }
-
-    #[getter]
-    fn ht(&self) -> PyResult<f64> {
-        Ok(self.ht)
-    }
-}
-
-impl From<BeatmapStarRating> for PyBeatmapStarRating {
-    fn from(star_rating: BeatmapStarRating) -> Self {
-        PyBeatmapStarRating {
-            no_mod: star_rating.no_mod,
-            dt: star_rating.dt,
-            ht: star_rating.ht,
-        }
-    }
-}
-
+// Structure mixte (numérique + complexe) - Structure manuelle, getters automatiques
 #[pyclass]
 #[derive(Debug, Clone)]
 pub struct PyBeatmapStats {
@@ -199,49 +58,71 @@ pub struct PyBeatmapStats {
     pub slider_count: i32,
 }
 
-#[pymethods]
-impl PyBeatmapStats {
-    #[getter]
-    fn ar(&self) -> PyResult<f32> {
-        Ok(self.ar)
-    }
-
-    #[getter]
-    fn od(&self) -> PyResult<f32> {
-        Ok(self.od)
-    }
-
-    #[getter]
-    fn cs(&self) -> PyResult<f32> {
-        Ok(self.cs)
-    }
-
-    #[getter]
-    fn hp(&self) -> PyResult<f32> {
-        Ok(self.hp)
-    }
-
-    #[getter]
-    fn total_length(&self) -> PyResult<i32> {
-        Ok(self.total_length)
-    }
-
-    #[getter]
-    fn star_rating(&self) -> PyResult<PyBeatmapStarRating> {
-        Ok(self.star_rating.clone())
-    }
-
-    #[getter]
-    fn object_count(&self) -> PyResult<i32> {
-        Ok(self.object_count)
-    }
-
-    #[getter]
-    fn slider_count(&self) -> PyResult<i32> {
-        Ok(self.slider_count)
+py_getters! {
+    impl PyBeatmapStats {
+        ar: f32,
+        od: f32,
+        cs: f32,
+        hp: f32,
+        total_length: i32,
+        star_rating: PyBeatmapStarRating,
+        object_count: i32,
+        slider_count: i32,
     }
 }
 
+py_struct! {
+    #[pyclass]
+    pub struct PyBeatmapTechnicalInfo {
+        md5: String,
+        id: i32,
+        set_id: i32,
+        mode: String,
+        ranked_status: String,
+    }
+}
+
+// Structure principale avec des champs complexes
+py_struct_main! {
+    #[pyclass]
+    pub struct PyBeatmapInfo {
+        metadata: PyBeatmapMetadata,
+        location: PyBeatmapLocation,
+        stats: PyBeatmapStats,
+        technical: PyBeatmapTechnicalInfo,
+    }
+}
+
+// Implémentations From avec les macros
+py_from_impl_direct! {
+    PyBeatmapMetadata => BeatmapMetadata {
+        author,
+        creator,
+        title_romanized,
+        title_original,
+        difficulty,
+        tags,
+    }
+}
+
+py_from_impl_direct! {
+    PyBeatmapLocation => BeatmapLocation {
+        folder,
+        filename,
+        audio,
+        cover,
+    }
+}
+
+py_from_impl_direct! {
+    PyBeatmapStarRating => BeatmapStarRating {
+        no_mod,
+        dt,
+        ht,
+    }
+}
+
+// Implémentations From manuelles pour les cas complexes
 impl From<BeatmapStats> for PyBeatmapStats {
     fn from(stats: BeatmapStats) -> Self {
         PyBeatmapStats {
@@ -257,44 +138,6 @@ impl From<BeatmapStats> for PyBeatmapStats {
     }
 }
 
-#[pyclass]
-#[derive(Debug, Clone)]
-pub struct PyBeatmapTechnicalInfo {
-    pub md5: String,
-    pub id: i32,
-    pub set_id: i32,
-    pub mode: String,
-    pub ranked_status: String,
-}
-
-#[pymethods]
-impl PyBeatmapTechnicalInfo {
-    #[getter]
-    fn md5(&self) -> PyResult<String> {
-        Ok(self.md5.clone())
-    }
-
-    #[getter]
-    fn id(&self) -> PyResult<i32> {
-        Ok(self.id)
-    }
-
-    #[getter]
-    fn set_id(&self) -> PyResult<i32> {
-        Ok(self.set_id)
-    }
-
-    #[getter]
-    fn mode(&self) -> PyResult<String> {
-        Ok(self.mode.clone())
-    }
-
-    #[getter]
-    fn ranked_status(&self) -> PyResult<String> {
-        Ok(self.ranked_status.clone())
-    }
-}
-
 impl From<BeatmapTechnicalInfo> for PyBeatmapTechnicalInfo {
     fn from(technical: BeatmapTechnicalInfo) -> Self {
         PyBeatmapTechnicalInfo {
@@ -307,14 +150,22 @@ impl From<BeatmapTechnicalInfo> for PyBeatmapTechnicalInfo {
     }
 }
 
-#[pyfunction]
-pub fn get_beatmap_info(process: &PyProcess, state: &mut PyState) -> PyResult<PyBeatmapInfo> 
-{
-    match rosu_memory_lib::reader::beatmap::stable::memory::get_beatmap_info(&process.0, &mut state.0) {
-        Ok(beatmap_info) => {
-            let bm = PyBeatmapInfo::from(beatmap_info);
-            Ok(bm)
+impl From<BeatmapInfo> for PyBeatmapInfo {
+    fn from(info: BeatmapInfo) -> Self {
+        PyBeatmapInfo {
+            metadata: PyBeatmapMetadata::from(info.metadata),
+            location: PyBeatmapLocation::from(info.location),
+            stats: PyBeatmapStats::from(info.stats),
+            technical: PyBeatmapTechnicalInfo::from(info.technical),
         }
+    }
+}
+
+// Fonction avec conversion automatique
+#[pyfunction]
+pub fn get_beatmap_info(process: &PyProcess, state: &mut PyState) -> PyResult<PyBeatmapInfo> {
+    match rosu_memory_lib::reader::beatmap::stable::memory::get_beatmap_info(&process.0, &mut state.0) {
+        Ok(result) => Ok(PyBeatmapInfo::from(result)),
         Err(e) => Err(PyErr::new::<pyo3::exceptions::PyRuntimeError, _>(e.to_string())),
     }
 }
