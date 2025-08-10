@@ -8,7 +8,6 @@ use rosu_memory_lib::reader::beatmap::common::BeatmapTechnicalInfo;
 use crate::common::{PyProcess, PyState};
 use crate::{py_struct, py_struct_numeric, py_struct_main, py_from_impl_direct, py_getters};
 
-// Structures avec champs String (nécessitent clone)
 py_struct! {
     #[pyclass]
     pub struct PyBeatmapMetadata {
@@ -31,7 +30,6 @@ py_struct! {
     }
 }
 
-// Structures avec champs numériques (pas de clone nécessaire)
 py_struct_numeric! {
     #[pyclass]
     pub struct PyBeatmapStarRating {
@@ -41,10 +39,8 @@ py_struct_numeric! {
     }
 }
 
-// Implémenter Copy pour PyBeatmapStarRating
 impl Copy for PyBeatmapStarRating {}
 
-// Structure mixte (numérique + complexe) - Structure manuelle, getters automatiques
 #[pyclass]
 #[derive(Debug, Clone)]
 pub struct PyBeatmapStats {
@@ -82,7 +78,6 @@ py_struct! {
     }
 }
 
-// Structure principale avec des champs complexes
 py_struct_main! {
     #[pyclass]
     pub struct PyBeatmapInfo {
@@ -93,7 +88,6 @@ py_struct_main! {
     }
 }
 
-// Implémentations From avec les macros
 py_from_impl_direct! {
     PyBeatmapMetadata => BeatmapMetadata {
         author,
@@ -122,7 +116,6 @@ py_from_impl_direct! {
     }
 }
 
-// Implémentations From manuelles pour les cas complexes
 impl From<BeatmapStats> for PyBeatmapStats {
     fn from(stats: BeatmapStats) -> Self {
         PyBeatmapStats {
@@ -161,7 +154,6 @@ impl From<BeatmapInfo> for PyBeatmapInfo {
     }
 }
 
-// Fonction avec conversion automatique
 #[pyfunction]
 pub fn get_beatmap_info(process: &PyProcess, state: &mut PyState) -> PyResult<PyBeatmapInfo> {
     match rosu_memory_lib::reader::beatmap::stable::memory::get_beatmap_info(&process.0, &mut state.0) {

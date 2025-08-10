@@ -1,22 +1,5 @@
+use pyo3::prelude::*;
 
-
-/// Macro pour créer une structure Python avec des champs simples
-/// 
-/// # Syntax
-/// ```rust
-/// py_struct! {
-///     #[pyclass]
-///     pub struct StructName {
-///         field1: Type1,
-///         field2: Type2,
-///     }
-/// }
-/// ```
-/// 
-/// # Generated
-/// - Structure avec #[pyclass] et #[derive(Debug, Clone)]
-/// - Implémentation automatique des getters
-/// - Implémentation From automatique
 #[macro_export]
 macro_rules! py_struct {
     (
@@ -47,18 +30,6 @@ macro_rules! py_struct {
     };
 }
 
-/// Macro pour créer une structure Python avec des champs numériques (pas de clone)
-/// 
-/// # Syntax
-/// ```rust
-/// py_struct_numeric! {
-///     #[pyclass]
-///     pub struct StructName {
-///         field1: i32,
-///         field2: f64,
-///     }
-/// }
-/// ```
 #[macro_export]
 macro_rules! py_struct_numeric {
     (
@@ -88,18 +59,6 @@ macro_rules! py_struct_numeric {
         }
     };
 }
-
-/// Macro pour générer seulement les getters pour une structure existante
-/// 
-/// # Syntax
-/// ```rust
-/// py_getters! {
-///     impl StructName {
-///         field1: Type1,
-///         field2: Type2,
-///     }
-/// }
-/// ```
 #[macro_export]
 macro_rules! py_getters {
     (
@@ -121,18 +80,7 @@ macro_rules! py_getters {
     };
 }
 
-/// Macro pour créer une structure Python principale (avec des champs complexes)
-/// 
-/// # Syntax
-/// ```rust
-/// py_struct_main! {
-///     #[pyclass]
-///     pub struct StructName {
-///         field1: ComplexType1,
-///         field2: ComplexType2,
-///     }
-/// }
-/// ```
+
 #[macro_export]
 macro_rules! py_struct_main {
     (
@@ -163,17 +111,6 @@ macro_rules! py_struct_main {
     };
 }
 
-/// Macro pour implémenter From automatiquement avec mapping direct
-/// 
-/// # Syntax
-/// ```rust
-/// py_from_impl_direct! {
-///     PyStructName => RustStructName {
-///         field1,
-///         field2,
-///     }
-/// }
-/// ```
 #[macro_export]
 macro_rules! py_from_impl_direct {
     (
@@ -195,16 +132,7 @@ macro_rules! py_from_impl_direct {
     };
 }
 
-/// Macro pour créer une fonction Python qui wrapper une fonction Rust
-/// 
-/// # Syntax
-/// ```rust
-/// py_function! {
-///     pub fn function_name(process: &PyProcess, state: &mut PyState) -> PyResult<ReturnType> {
-///         rust_function(&process.0, &mut state.0)
-///     }
-/// }
-/// ```
+
 #[macro_export]
 macro_rules! py_function {
     (
