@@ -31,7 +31,7 @@ pub fn info(p: &Process, state: &mut State) -> Result<UserInfo, Error> {
         user_profile_base + USER_PROFILE_OFFSET.playcount,
         size_of::<i32>() * 5,
         &mut buffer,
-    )?; 
+    )?;
     let playcount = i32::from_le_bytes(buffer[0..4].try_into().unwrap());
     let playmode = i32::from_le_bytes(buffer[4..8].try_into().unwrap());
     let rank = i32::from_le_bytes(buffer[8..12].try_into().unwrap());

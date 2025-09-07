@@ -2,9 +2,9 @@ pub mod beatmap;
 pub mod common;
 pub mod gameplay;
 pub mod helpers;
+pub mod overlay;
 pub mod resultscreen;
 pub mod user;
-pub mod overlay;
 
 use crate::reader::common::stable::memory::game_state;
 use crate::reader::common::GameState;

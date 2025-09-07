@@ -59,8 +59,8 @@ pub(crate) const SIGNATURES: SignatureBase = SignatureBase {
     menu_mods_sig: "C8 FF ?? ?? ?? ?? ?? 81 0D ?? ?? ?? ?? 00 08 00 00",
     rulesets_sig: "7D 15 A1 ?? ?? ?? ?? 85 C0",
     playtime_sig: "5E 5F 5D C3 A1 ?? ?? ?? ?? 89 ?? 04",
-    skin_sig: "74 2C 85 FF 75 28 A1 ?? ?? ?? ?? 8D 15", 
-    chat_checker_sig: "0A D7 23 3C 00 00 ?? 01", // modified back again caused crash 
+    skin_sig: "74 2C 85 FF 75 28 A1 ?? ?? ?? ?? 8D 15",
+    chat_checker_sig: "0A D7 23 3C 00 00 ?? 01", // modified back again caused crash
     audio_time_base_sig: "55 8B EC 83 EC 08 A1 ?? ?? ?? ?? 85 C0", // need to use  0x7 offset
     ig_time_base_sig: "EB 0A A1 ?? ?? ?? ?? A3",
     settings_sig: "83 E0 20 85 C0 7E 2F",

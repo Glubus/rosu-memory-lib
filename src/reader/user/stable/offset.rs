@@ -26,5 +26,4 @@ pub(crate) const USER_PROFILE_OFFSET: UserProfileOffset = UserProfileOffset {
     pp: 0x88,
     bancho_status: 0x8c, // end read
     country_code: 0x9c,
-
 };

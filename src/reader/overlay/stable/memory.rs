@@ -1,22 +1,22 @@
+use crate::reader::beatmap::stable::memory::mode;
+use crate::reader::common::stable::memory::check_game_state;
+use crate::reader::common::GameMode;
+use crate::reader::common::GameState;
+use crate::reader::overlay::common::{Key, KeyOverlay};
 use crate::reader::structs::State;
+use crate::reader::user::stable::memory::playmode;
 use crate::Error;
 use rosu_mem::process::{Process, ProcessTraits};
-use crate::reader::overlay::common::{Key, KeyOverlay};
-use crate::reader::common::stable::memory::check_game_state;
-use crate::reader::common::GameState;
-use crate::reader::user::stable::memory::playmode;
-use crate::reader::beatmap::stable::memory::mode;
-use crate::reader::common::GameMode;
 
 pub fn ruleset_addr(p: &Process, state: &mut State) -> Result<i32, Error> {
-    if check_game_state(p, state, GameState::Playing)? && playmode(p, state)? == 0
-    && mode(p, state)? == GameMode::Osu
+    if check_game_state(p, state, GameState::Playing)?
+        && playmode(p, state)? == 0
+        && mode(p, state)? == GameMode::Osu
     {
         let ruleset_ptr = p.read_i32(state.addresses.rulesets - 0xb)?;
         let ruleset_addr = p.read_i32(ruleset_ptr + 0x4)?;
         Ok(ruleset_addr)
-    }
-    else {
+    } else {
         Err(Error::NotAvailable("Not Playing".to_string()))
     }
 }
@@ -34,7 +34,10 @@ pub fn key_overlay_std(p: &Process, state: &mut State) -> Result<KeyOverlay, Err
     let items_size = p.read_i32(key_array_addr + 0x4)?;
 
     if items_size < 4 {
-        return Err(Error::MemoryRead(format!("Key array size is less than 4, got {}", items_size)));
+        return Err(Error::MemoryRead(format!(
+            "Key array size is less than 4, got {}",
+            items_size
+        )));
     }
 
     let key_1_pressed = p.read_i32(p.read_i32(key_array_addr + 0x8)? + 0x1C)? != 0;

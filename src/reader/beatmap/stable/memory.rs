@@ -39,11 +39,7 @@ generate_offset_getter! {
 pub fn stats(p: &Process, state: &mut State) -> Result<BeatmapStats, Error> {
     let beatmap_addr = beatmap_addr(p, state)?;
     let mut buffer = [0u8; size_of::<f32>() * 4];
-    p.read(
-        beatmap_addr + 0x2c,
-        size_of::<f32>() * 4,
-        &mut buffer,
-    )?;
+    p.read(beatmap_addr + 0x2c, size_of::<f32>() * 4, &mut buffer)?;
 
     Ok(BeatmapStats {
         ar: f32::from_le_bytes(buffer[0..4].try_into().unwrap()),
@@ -61,14 +57,9 @@ pub fn info(p: &Process, state: &mut State) -> Result<BeatmapInfo, Error> {
     let beatmap_addr = beatmap_addr(p, state)?;
 
     let mut buffer = [0u8; size_of::<f32>() * 4];
-    p.read(
-        beatmap_addr + 0x2c,
-        size_of::<f32>() * 4,
-        &mut buffer,
-    )?;
+    p.read(beatmap_addr + 0x2c, size_of::<f32>() * 4, &mut buffer)?;
 
-
-    let stats =BeatmapStats {
+    let stats = BeatmapStats {
         ar: f32::from_le_bytes(buffer[0..4].try_into().unwrap()),
         cs: f32::from_le_bytes(buffer[4..8].try_into().unwrap()),
         hp: f32::from_le_bytes(buffer[8..12].try_into().unwrap()),

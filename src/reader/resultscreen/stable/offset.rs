@@ -32,8 +32,8 @@ pub struct ResultScreenHitsOffset {
 pub(crate) const RESULT_SCREEN_HITS_OFFSET: ResultScreenHitsOffset = ResultScreenHitsOffset {
     _100: 0x88,  // 136
     _300: 0x8A,  // 138
-    _50:  0x8C,  // 140
+    _50: 0x8C,   // 140
     _geki: 0x8E, // 142
     _katu: 0x90, // 144
-    _miss: 0x92  // 146
+    _miss: 0x92, // 146
 };

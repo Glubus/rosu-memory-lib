@@ -43,7 +43,18 @@ pub fn playtime_addr(p: &Process, state: &mut State) -> Result<i32, Error> {
 }
 
 pub fn is_watching_replay(p: &Process, state: &mut State) -> Result<bool, Error> {
-    Ok(p.read_u8(p.read_i32(state.addresses.check_replay_addr + COMMON_OFFSET.check_replay)?)? == 1)
+    Ok(
+        p.read_u8(p.read_i32(state.addresses.check_replay_addr + COMMON_OFFSET.check_replay)?)?
+            == 1,
+    )
+}
+
+// Found by LoPij ! thanks
+pub fn is_paused(p: &Process, state: &mut State) -> Result<bool, Error> {
+    let pause = p.read_i8(
+        p.read_i32(state.addresses.base + COMMON_OFFSET.pause_ptr)? + COMMON_OFFSET.pause,
+    )?;
+    return Ok(pause == 1);
 }
 
 generate_offset_getter! {

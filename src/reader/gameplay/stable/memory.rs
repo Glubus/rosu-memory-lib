@@ -9,8 +9,8 @@ use crate::{
     generate_offset_getter,
     reader::helpers::{read_f64, read_i16, read_i32, read_string, read_u64},
 };
-use std::mem::size_of;
 use rosu_mem::process::{Process, ProcessTraits};
+use std::mem::size_of;
 
 pub fn rulesets_addr(p: &Process, state: &mut State) -> Result<i32, Error> {
     if check_game_state(p, state, GameState::Playing)? {
@@ -61,7 +61,7 @@ pub fn retries(p: &Process, state: &mut State) -> Result<i32, Error> {
 
 pub fn hits(p: &Process, state: &mut State) -> Result<Hit, Error> {
     let score_base = score_base(p, state)?;
-    
+
     // Read all hits data in one memory operation
     let mut hits_buffer = [0u8; size_of::<i16>() * 6];
     p.read(
@@ -87,7 +87,6 @@ pub fn info(p: &Process, state: &mut State) -> Result<GameplayInfo, Error> {
 
     let hp = hp(p, state)?;
     let mods = mods(p, state)?;
-
 
     // Read all hits data in one memory operation
     let mut hits_buffer = [0u8; size_of::<i16>() * 6];

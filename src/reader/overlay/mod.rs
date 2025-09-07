@@ -1,2 +1,2 @@
-pub mod stable;
 pub mod common;
+pub mod stable;

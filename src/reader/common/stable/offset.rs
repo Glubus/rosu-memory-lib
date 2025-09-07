@@ -6,6 +6,8 @@ pub struct CommonOffset {
     pub mods_ptr: i32,
     pub ig_time: i32,
     pub check_replay: i32,
+    pub pause_ptr: i32,
+    pub pause: i32,
 }
 
 pub(crate) const COMMON_OFFSET: CommonOffset = CommonOffset {
@@ -16,4 +18,6 @@ pub(crate) const COMMON_OFFSET: CommonOffset = CommonOffset {
     mods_ptr: 0x9,
     ig_time: 0x5,
     check_replay: 0x46,
+    pause_ptr: 0x51,
+    pause: 0x33,
 };
