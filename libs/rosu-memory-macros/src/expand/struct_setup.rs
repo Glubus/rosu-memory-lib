@@ -4,16 +4,12 @@ use quote::quote;
 use syn::{Data, Fields, Result};
 
 pub fn gen_base_setup(attr: &ReadMemoryStructAttr) -> TokenStream {
-    if let Some(base_expr) = &attr.base {
-        let chain_steps = attr.chain.iter().map(|step| {
-            quote! { __base = p.read_i32(__base + (#step))?; }
-        });
-        quote! {
-            let mut __base: i32 = #base_expr;
-            #( #chain_steps )*
-        }
-    } else {
-        quote! { let __base: i32 = base; }
+    let chain_steps = attr.chain.iter().map(|step| {
+        quote! { __base = p.read_i32(__base + (#step))?; }
+    });
+    quote! {
+        let mut __base: i32 = base;
+        #( #chain_steps )*
     }
 }
 

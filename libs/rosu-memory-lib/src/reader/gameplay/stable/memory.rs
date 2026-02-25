@@ -1,4 +1,4 @@
-use crate::reader::common::stable::memory::check_game_state;
+use crate::reader::common::stable::GameStateInfo;
 use crate::reader::common::GameState;
 use crate::reader::gameplay::common::GameplayInfo;
 use crate::reader::gameplay::stable::offset::GAMEPLAY_OFFSET;
@@ -13,7 +13,8 @@ use rosu_mem::process::{Process, ProcessTraits};
 use std::mem::size_of;
 
 pub fn rulesets_addr(p: &Process, state: &mut State) -> Result<i32, Error> {
-    if check_game_state(p, state, GameState::Playing)? {
+    let game_state = GameStateInfo::read(p, state)?;
+    if game_state.state == GameState::Playing {
         Ok(p.read_i32(state.addresses.rulesets - GAMEPLAY_OFFSET.ptr)?)
     } else {
         Err(Error::NotAvailable("Not in Playing".to_string()))
@@ -47,10 +48,9 @@ generate_offset_getter! {
     hits_katu: i16 = read_i16(GAMEPLAY_OFFSET.hits._katu, score_base);
 }
 
-/// this is a wrapper to not confuse people it could be deleted in the future
-/// use -> crate::reader::common::stable::memory::game_time
+/// Get in-game time from common module
 pub fn game_time(p: &Process, state: &mut State) -> Result<i32, Error> {
-    crate::reader::common::stable::memory::game_time(p, state)
+    crate::reader::common::stable::TimingInfo::read(p, state).map(|info| info.game_time)
 }
 
 pub fn retries(p: &Process, state: &mut State) -> Result<i32, Error> {

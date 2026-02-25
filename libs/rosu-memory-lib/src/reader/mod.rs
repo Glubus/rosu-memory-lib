@@ -6,7 +6,7 @@ pub mod overlay;
 pub mod resultscreen;
 pub mod user;
 
-use crate::reader::common::stable::memory::game_state;
+use crate::reader::common::stable::GameStateInfo;
 use crate::reader::common::GameState;
 use crate::reader::structs::State;
 use crate::reader::structs::StaticAddresses;
@@ -29,7 +29,7 @@ where
     F: Fn(&Process, &mut State) -> Result<(), Error>,
 {
     loop {
-        if game_state(p, state)? == g_state {
+        if GameStateInfo::read(p, state)?.state == g_state {
             return Ok(());
         }
         if let Some(f) = &callback {

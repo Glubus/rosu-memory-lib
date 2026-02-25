@@ -76,7 +76,7 @@ mod utils;
 /// a single `p.read(..., byte_slice)` operation resulting in significantly fewer `readProcessMemory` calls!
 #[proc_macro_derive(
     ReadMemory,
-    attributes(read_memory, offset, nested, ptr_chain, computed, skip)
+    attributes(read_memory, offset, nested, ptr_chain, computed, skip, init_base)
 )]
 pub fn derive_read_memory(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);

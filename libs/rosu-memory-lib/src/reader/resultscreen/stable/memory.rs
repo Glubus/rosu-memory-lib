@@ -1,5 +1,5 @@
 use crate::generate_offset_getter;
-use crate::reader::common::stable::memory::check_game_state;
+use crate::reader::common::stable::GameStateInfo;
 use crate::reader::common::GameMode;
 use crate::reader::common::GameState;
 use crate::reader::helpers::{calculate_accuracy, read_i16, read_i32, read_string};
@@ -10,7 +10,8 @@ use crate::Error;
 use rosu_mem::process::{Process, ProcessTraits};
 
 pub fn result_screen_ptr(p: &Process, state: &mut State) -> Result<i32, Error> {
-    if check_game_state(p, state, GameState::ResultScreen)? {
+    let game_state = GameStateInfo::read(p, state)?;
+    if game_state.state == GameState::ResultScreen {
         Ok(p.read_i32(state.addresses.rulesets - RESULT_SCREEN_OFFSET.ptr)?)
     } else {
         Err(Error::NotAvailable("Not in ResultScreen".to_string()))

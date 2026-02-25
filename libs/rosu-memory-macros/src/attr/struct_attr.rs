@@ -7,37 +7,36 @@ use syn::{
 
 /// Everything parsed from `#[read_memory(...)]` on the struct itself.
 pub struct ReadMemoryStructAttr {
-    /// Starting address expression (may reference `p` and `state`).
-    /// If `None`, the generated function receives `base: i32` as a parameter.
-    pub base: Option<Expr>,
     /// Each element becomes `addr = p.read_i32(addr + element)?`
     pub chain: Vec<Expr>,
     /// Optional `GameState` variant ident used to generate a guard check.
     pub guard: Option<Ident>,
+    /// Base address initialization expression for generating .read() method.
+    /// If provided, generates a .read(p, state) method that computes the base.
+    pub init_base: Option<Expr>,
 }
 
 impl Default for ReadMemoryStructAttr {
     fn default() -> Self {
         Self {
-            base: None,
             chain: vec![],
             guard: None,
+            init_base: None,
         }
     }
 }
 
 impl Parse for ReadMemoryStructAttr {
     fn parse(input: ParseStream) -> Result<Self> {
-        let mut base: Option<Expr> = None;
         let mut chain: Vec<Expr> = vec![];
         let mut guard: Option<Ident> = None;
+        let mut init_base: Option<Expr> = None;
 
         while !input.is_empty() {
             let key: Ident = input.parse()?;
             input.parse::<Token![=]>()?;
 
             match key.to_string().as_str() {
-                "base" => base = Some(input.parse::<Expr>()?),
                 "chain" => {
                     let content;
                     bracketed!(content in input);
@@ -45,10 +44,11 @@ impl Parse for ReadMemoryStructAttr {
                     chain = exprs.into_iter().collect();
                 }
                 "guard" => guard = Some(input.parse::<Ident>()?),
+                "init_base" => init_base = Some(input.parse::<Expr>()?),
                 other => {
                     return Err(syn::Error::new(
                         key.span(),
-                        format!("unknown key `{other}`, expected `base`, `chain`, or `guard`"),
+                        format!("unknown key `{other}`, expected `chain`, `guard`, or `init_base`"),
                     ));
                 }
             }
@@ -57,6 +57,10 @@ impl Parse for ReadMemoryStructAttr {
                 input.parse::<Token![,]>()?;
             }
         }
-        Ok(ReadMemoryStructAttr { base, chain, guard })
+        Ok(ReadMemoryStructAttr {
+            chain,
+            guard,
+            init_base,
+        })
     }
 }

@@ -1,5 +1,5 @@
-use crate::reader::beatmap::stable::memory::mode;
-use crate::reader::common::stable::memory::check_game_state;
+use crate::reader::beatmap::stable::BeatmapInfo;
+use crate::reader::common::stable::GameStateInfo;
 use crate::reader::common::GameMode;
 use crate::reader::common::GameState;
 use crate::reader::overlay::common::{Key, KeyOverlay};
@@ -9,9 +9,10 @@ use crate::Error;
 use rosu_mem::process::{Process, ProcessTraits};
 
 pub fn ruleset_addr(p: &Process, state: &mut State) -> Result<i32, Error> {
-    if check_game_state(p, state, GameState::Playing)?
+    let game_state = GameStateInfo::read(p, state)?;
+    if game_state.state == GameState::Playing
         && playmode(p, state)? == 0
-        && mode(p, state)? == GameMode::Osu
+        && BeatmapInfo::read(p, state)?.technical.mode == GameMode::Osu
     {
         let ruleset_ptr = p.read_i32(state.addresses.rulesets - 0xb)?;
         let ruleset_addr = p.read_i32(ruleset_ptr + 0x4)?;

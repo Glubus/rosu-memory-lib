@@ -1,7 +1,6 @@
 pub mod stable;
 use std::path::PathBuf;
 
-use crate::impl_osu_accessor;
 use crate::reader::structs::State;
 use crate::Error;
 use rosu_mem::process::Process;
@@ -121,16 +120,44 @@ impl<'a> CommonReader<'a> {
         }
     }
 
-    impl_osu_accessor! {
-        fn game_state() -> GameState => stable::memory::game_state,
-        fn menu_game_mode() -> u32 => stable::memory::menu_game_mode,
-        fn path_folder() -> PathBuf => stable::memory::path_folder,
+    pub fn game_state(&mut self) -> Result<GameState, Error> {
+        match self.osu_type {
+            OsuClientKind::Stable => {
+                stable::GameStateInfo::read(self.process, self.state).map(|info| info.state)
+            }
+            _ => Err(Error::Unsupported(
+                "Unsupported osu type for now".to_string(),
+            )),
+        }
+    }
+
+    pub fn menu_game_mode(&mut self) -> Result<u32, Error> {
+        match self.osu_type {
+            OsuClientKind::Stable => {
+                stable::MenuInfo::read(self.process, self.state).map(|info| info.mods)
+            }
+            _ => Err(Error::Unsupported(
+                "Unsupported osu type for now".to_string(),
+            )),
+        }
+    }
+
+    pub fn path_folder(&mut self) -> Result<PathBuf, Error> {
+        match self.osu_type {
+            OsuClientKind::Stable => {
+                stable::PathInfo::read(self.process, self.state).map(|info| info.songs_folder)
+            }
+            _ => Err(Error::Unsupported(
+                "Unsupported osu type for now".to_string(),
+            )),
+        }
     }
 
     pub fn check_game_state(&mut self, g_state: GameState) -> Result<bool, Error> {
         match self.osu_type {
             OsuClientKind::Stable => {
-                stable::memory::check_game_state(self.process, self.state, g_state)
+                let state_info = stable::GameStateInfo::read(self.process, self.state)?;
+                Ok(state_info.state == g_state)
             }
             _ => Err(Error::Unsupported(
                 "Unsupported osu type for now".to_string(),

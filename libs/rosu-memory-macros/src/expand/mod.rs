@@ -13,7 +13,6 @@ use syn::{DeriveInput, Result};
 pub fn derive_read_memory(input: DeriveInput) -> Result<TokenStream> {
     let struct_name = &input.ident;
     let struct_attr = parse_struct_attr(&input.attrs)?;
-    let has_base = struct_attr.base.is_some();
 
     let base_setup = gen_base_setup(&struct_attr);
     let guard_block = gen_guard_block(&struct_attr.guard);
@@ -21,7 +20,22 @@ pub fn derive_read_memory(input: DeriveInput) -> Result<TokenStream> {
     let fields_iter = extract_named_fields(&input.data, struct_name)?;
     let (read_stmts, ctor_fields) = process_fields(fields_iter)?;
 
-    let fn_sig = gen_fn_sig(has_base);
+    let fn_sig = gen_fn_sig();
+
+    // Generate .read() method if init_base is present
+    let read_method = if let Some(init_base_expr) = &struct_attr.init_base {
+        quote! {
+            pub fn read(
+                p: &rosu_mem::process::Process,
+                state: &mut crate::reader::structs::State,
+            ) -> Result<Self, crate::Error> {
+                let base = #init_base_expr;
+                Self::read_from_memory(p, state, base)
+            }
+        }
+    } else {
+        quote! {}
+    };
 
     Ok(quote! {
         impl #struct_name {
@@ -36,34 +50,32 @@ pub fn derive_read_memory(input: DeriveInput) -> Result<TokenStream> {
                     #( #ctor_fields )*
                 })
             }
+
+            #read_method
         }
     })
 }
 
 fn parse_struct_attr(attrs: &[syn::Attribute]) -> Result<ReadMemoryStructAttr> {
+    let mut result = ReadMemoryStructAttr::default();
+
     for attr in attrs {
         if attr.path().is_ident("read_memory") {
-            return attr.parse_args::<ReadMemoryStructAttr>();
+            result = attr.parse_args::<ReadMemoryStructAttr>()?;
+        } else if attr.path().is_ident("init_base") {
+            result.init_base = Some(attr.parse_args::<syn::Expr>()?);
         }
     }
-    Ok(ReadMemoryStructAttr::default())
+
+    Ok(result)
 }
 
-fn gen_fn_sig(has_base: bool) -> TokenStream {
-    if has_base {
-        quote! {
-            pub fn read_from_memory(
-                p: &rosu_mem::process::Process,
-                state: &mut crate::reader::structs::State,
-            ) -> Result<Self, crate::Error>
-        }
-    } else {
-        quote! {
-            pub fn read_from_memory(
-                p: &rosu_mem::process::Process,
-                state: &mut crate::reader::structs::State,
-                base: i32,
-            ) -> Result<Self, crate::Error>
-        }
+fn gen_fn_sig() -> TokenStream {
+    quote! {
+        pub fn read_from_memory(
+            p: &rosu_mem::process::Process,
+            state: &mut crate::reader::structs::State,
+            base: i32,
+        ) -> Result<Self, crate::Error>
     }
 }
