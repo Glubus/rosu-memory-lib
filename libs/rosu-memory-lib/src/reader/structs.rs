@@ -1,6 +1,4 @@
 #![allow(unused_imports)]
-#[cfg(feature = "parallel-read")]
-use rayon::prelude::*;
 
 use crate::Error;
 use rosu_mem::{
@@ -72,67 +70,9 @@ impl StaticAddresses {
     pub fn new(p: &Process) -> Result<Self, Error> {
         let start = Instant::now();
         println!("Reading signatures...");
-
-        #[cfg(feature = "parallel-read")]
-        {
-            println!("Using parallel signature reading with rayon...");
-            Self::new_parallel(p, start)
-        }
-
-        #[cfg(not(feature = "parallel-read"))]
-        {
-            println!("Using sequential signature reading...");
-            Self::new_sequential(p, start)
-        }
+        Self::new_sequential(p, start)
     }
 
-    #[cfg(feature = "parallel-read")]
-    fn new_parallel(p: &Process, start: Instant) -> Result<Self, Error> {
-        use rayon::prelude::*;
-
-        let signatures = [
-            ("base", SIGNATURES.base_sig),
-            ("status", SIGNATURES.status_sig),
-            ("menu_mods", SIGNATURES.menu_mods_sig),
-            ("rulesets", SIGNATURES.rulesets_sig),
-            ("playtime", SIGNATURES.playtime_sig),
-            ("skin", SIGNATURES.skin_sig),
-            ("chat_checker", SIGNATURES.chat_checker_sig),
-            ("audio_time_base", SIGNATURES.audio_time_base_sig),
-            ("ig_time_base", SIGNATURES.ig_time_base_sig),
-            ("settings", SIGNATURES.settings_sig),
-            ("user_profile", SIGNATURES.user_profile_sig),
-            ("check_replay_addr", SIGNATURES.check_replay_addr),
-        ];
-
-        let results: HashMap<&str, i32> = signatures
-            .par_iter()
-            .map(|(name, sig)| {
-                let signature = Signature::from_str(sig)?;
-                let addr = p.read_signature(&signature)?;
-                Ok::<_, Error>((*name, addr))
-            })
-            .collect::<Result<_, Error>>()?;
-
-        println!("Time taken: {:?}", start.elapsed());
-
-        Ok(Self {
-            base: results["base"],
-            status: results["status"],
-            menu_mods: results["menu_mods"],
-            rulesets: results["rulesets"],
-            playtime: results["playtime"],
-            skin: results["skin"],
-            chat_checker: results["chat_checker"],
-            audio_time_base: results["audio_time_base"],
-            ig_time_base: results["ig_time_base"],
-            settings: results["settings"],
-            user_profile: results["user_profile"],
-            check_replay_addr: results["check_replay_addr"],
-        })
-    }
-
-    #[cfg(not(feature = "parallel-read"))]
     fn new_sequential(p: &Process, start: Instant) -> Result<Self, Error> {
         let signatures = [
             ("base", SIGNATURES.base_sig),

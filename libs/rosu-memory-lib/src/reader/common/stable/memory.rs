@@ -51,10 +51,8 @@ pub fn is_watching_replay(p: &Process, state: &mut State) -> Result<bool, Error>
 
 // Found by LoPij ! thanks
 pub fn is_paused(p: &Process, state: &mut State) -> Result<bool, Error> {
-       let base_some = p.read_i32(state.addresses.base + COMMON_OFFSET.pause_ptr)?;
-    let pause = p.read_i8(
-        base_some + COMMON_OFFSET.pause,
-    )?;
+    let base_some = p.read_i32(state.addresses.base + COMMON_OFFSET.pause_ptr)?;
+    let pause = p.read_i8(base_some + COMMON_OFFSET.pause)?;
     return Ok(pause == 1);
 }
 

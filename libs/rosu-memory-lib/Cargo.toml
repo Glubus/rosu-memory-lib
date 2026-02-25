@@ -1,0 +1,23 @@
+[package]
+name = "rosu-memory-lib"
+version.workspace = true
+edition.workspace = true
+description = "A library to read osu! memory"
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+keywords = ["osu", "memory", "game"]
+categories = ["games", "memory-management"]
+
+[lib]
+path = "src/lib.rs"
+name = "rosu_memory_lib"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+rosu-mem.workspace = true
+rosu-mods.workspace = true
+rosu-memory-macros = { path = "../rosu-memory-macros" }
+
+[dev-dependencies]
+rosu-mods.workspace = true

@@ -1,32 +1,20 @@
-[package]
-name = "rosu-memory-lib"
+[workspace]
+resolver = "2"
+members = [
+    "libs/rosu-memory-lib",
+    "libs/rosu-memory-macros",
+]
+
+[workspace.package]
 version = "1.3.1"
 edition = "2021"
-description = "A library to read osu! memory"
+authors = ["Glubus", "486c"]
 license = "MIT"
 repository = "https://github.com/Glubus/rosu-memory-lib"
-authors = ["Glubus", "486c"]
-keywords = ["osu", "memory", "game"]
-categories = ["games", "memory-management"]
 
-[features]
-default = []
-parallel-read = ["rayon"]
-
-[lib]
-path = "src/lib.rs"
-name = "rosu_memory_lib"
-crate-type = ["cdylib", "rlib"]
-
-[dependencies]
-rosu-mem = "2.0.0"
-rosu-map = "0.2.1"
-rosu-pp = "3.1.0"
-rayon = { version = "1.10.0", optional = true }
+[workspace.dependencies]
+rosu-mem = "3.0.0"
 rosu-mods = "0.3.1"
-
-[dev-dependencies]
-rosu-mods = "0.3.1"
-
-[profile.dev.package.rosu-mem]
-opt-level = 3
+syn = { version = "2", features = ["full", "extra-traits"] }
+quote = "1"
+proc-macro2 = "1"

@@ -1,35 +1,57 @@
 use crate::common::GameMode;
+use rosu_memory_macros::ReadMemory;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, ReadMemory)]
 pub struct BeatmapInfo {
+    #[nested(0)]
     pub metadata: BeatmapMetadata,
+    #[nested(0)]
     pub location: BeatmapLocation,
+    #[nested(0)]
     pub stats: BeatmapStats,
+    #[nested(0)]
     pub technical: BeatmapTechnicalInfo,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, ReadMemory)]
 pub struct BeatmapMetadata {
+    #[offset(0x18)]
     pub author: String,
+    #[offset(0x7C)]
     pub creator: String,
+    #[offset(0x24)]
     pub title_romanized: String,
+    #[offset(0x28)]
     pub title_original: String,
+    #[offset(0xAC)]
     pub difficulty: String,
+    #[offset(0x20)]
     pub tags: String,
 }
-#[derive(Debug, Clone)]
+
+#[derive(Debug, Clone, ReadMemory)]
 pub struct BeatmapTechnicalInfo {
+    #[offset(0x6C)]
     pub md5: String,
+    #[offset(0xC8)]
     pub id: i32,
+    #[offset(0xCC)]
     pub set_id: i32,
+    #[offset(0x11C, via = i32)]
     pub mode: GameMode,
+    #[offset(0x12C, via = i32)]
     pub ranked_status: BeatmapStatus,
 }
-#[derive(Debug, Clone)]
+
+#[derive(Debug, Clone, ReadMemory)]
 pub struct BeatmapLocation {
+    #[offset(0x78)]
     pub folder: String,
+    #[offset(0x90)]
     pub filename: String,
+    #[offset(0x64)]
     pub audio: String,
+    #[offset(0x68)]
     pub cover: String,
 }
 
@@ -52,15 +74,33 @@ pub struct BeatmapStarRating {
     pub ht: f64,
 }
 
-#[derive(Debug, Clone)]
+impl Default for BeatmapStarRating {
+    fn default() -> Self {
+        Self {
+            no_mod: 0.0,
+            dt: 0.0,
+            ht: 0.0,
+        }
+    }
+}
+
+#[derive(Debug, Clone, ReadMemory)]
 pub struct BeatmapStats {
+    #[offset(0x2C)]
     pub ar: f32,
-    pub od: f32,
+    #[offset(0x30)]
     pub cs: f32,
+    #[offset(0x34)]
     pub hp: f32,
+    #[offset(0x38)]
+    pub od: f32,
+    #[offset(0x134)]
     pub length: i32,
+    #[skip]
     pub star_rating: BeatmapStarRating,
+    #[offset(0xF8)]
     pub object_count: i32,
+    #[offset(0x146)]
     pub slider_count: i32,
 }
 
@@ -113,48 +153,4 @@ impl From<i32> for BeatmapStatus {
     fn from(value: i32) -> Self {
         Self::from(value as i16)
     }
-}
-
-pub(crate) struct BeatmapOffset {
-    pub ptr: i32,
-    pub metadata: BeatmapMetadataOffset,
-    pub location: BeatmapLocationOffset,
-    pub stats: BeatmapStatsOffset,
-    pub technical: BeatmapTechnicalOffset,
-}
-
-pub struct BeatmapStatsOffset {
-    pub ar: i32,
-    pub od: i32,
-    pub cs: i32,
-    pub hp: i32,
-    pub object_count: i32,
-    pub total_length: i32,
-    pub drain_time: i32,
-    pub star_rating: i32,
-    pub slider_count: i32,
-}
-
-pub struct BeatmapLocationOffset {
-    pub folder: i32,
-    pub filename: i32,
-    pub audio: i32,
-    pub cover: i32,
-}
-
-pub struct BeatmapTechnicalOffset {
-    pub md5: i32,
-    pub id: i32,
-    pub set_id: i32,
-    pub mode: i32,
-    pub ranked_status: i32,
-}
-
-pub struct BeatmapMetadataOffset {
-    pub author: i32,
-    pub creator: i32,
-    pub title_romanized: i32,
-    pub title_original: i32,
-    pub difficulty: i32,
-    pub tags: i32,
 }

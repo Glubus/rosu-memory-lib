@@ -1,13 +1,12 @@
-pub mod common;
 pub mod stable;
 
 use std::path::PathBuf;
 
 use crate::impl_osu_accessor;
-use crate::reader::beatmap::common::BeatmapInfo;
-use crate::reader::beatmap::common::BeatmapStarRating;
-use crate::reader::beatmap::common::BeatmapStats;
-use crate::reader::beatmap::common::BeatmapStatus;
+use crate::reader::beatmap::stable::models::BeatmapInfo;
+use crate::reader::beatmap::stable::models::BeatmapStarRating;
+use crate::reader::beatmap::stable::models::BeatmapStats;
+use crate::reader::beatmap::stable::models::BeatmapStatus;
 use crate::reader::common::GameMode;
 use crate::reader::common::OsuClientKind;
 use crate::reader::structs::State;
@@ -59,8 +58,5 @@ impl<'a> BeatmapReader<'a> {
         fn status() -> BeatmapStatus => stable::memory::status,
         fn info() -> BeatmapInfo => stable::memory::info,
         fn stats() -> BeatmapStats => stable::memory::stats,
-        fn path() -> PathBuf => stable::file::path,
-        fn audio_path() -> PathBuf => stable::file::audio_path,
-        fn star_rating() -> BeatmapStarRating => stable::file::star_rating,
     }
 }
