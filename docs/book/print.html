@@ -1,0 +1,763 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>rml-docs</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-2ea4a65b.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-dadf1dbd.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">rml-docs</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<p><code>rosu-memory-lib</code> is a Rust library for reading osu!stable process memory.</p>
+<p>It exposes typed structs for each game data domain (beatmap, gameplay, result screen, user profile, key overlay) and uses a derive macro (<code>ReadMemory</code>) to eliminate boilerplate pointer-chain traversal code.</p>
+<h2 id="quick-start"><a class="header" href="#quick-start">Quick Start</a></h2>
+<p>Each domain has a <code>Reader</code> struct that wraps a <code>Process</code> reference and a mutable <code>State</code>:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let p = Process::connect("osu!")?;
+let mut state = State { addresses: StaticAddresses::new(&amp;p)? };
+
+let mut gameplay = GameplayReader::new(&amp;p, &amp;mut state, OsuClientKind::Stable);
+let info = gameplay.info()?;
+println!("Score: {}", info.score);
+<span class="boring">}</span></code></pre>
+<h2 id="module-overview"><a class="header" href="#module-overview">Module Overview</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Module</th><th>Struct</th><th>Available when</th></tr>
+</thead>
+<tbody>
+<tr><td><code>beatmap</code></td><td><code>BeatmapInfo</code></td><td>SongSelect, Editor, Playing, ResultScreen</td></tr>
+<tr><td><code>gameplay</code></td><td><code>GameplayInfo</code></td><td>Playing</td></tr>
+<tr><td><code>resultscreen</code></td><td><code>ResultScreenInfo</code></td><td>ResultScreen</td></tr>
+<tr><td><code>user</code></td><td><code>UserInfo</code></td><td>always (once process is running)</td></tr>
+<tr><td><code>overlay</code></td><td><code>KeyOverlay</code></td><td>Playing + osu!Standard mode</td></tr>
+<tr><td><code>common</code></td><td><code>GameStateInfo</code>, <code>TimingInfo</code>, …</td><td>varies</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="architecture"><a class="header" href="#architecture">Architecture</a></h1>
+<h2 id="rewrite-pattern"><a class="header" href="#rewrite-pattern">Rewrite Pattern</a></h2>
+<p>All modules follow the same structure, modelled after the <code>beatmap</code> module:</p>
+<pre><code>reader/
+├── beatmap/
+│   ├── mod.rs       — BeatmapReader with impl_osu_accessor!
+│   └── stable.rs    — BeatmapInfo + sub-structs + pub mod memory
+├── gameplay/
+│   ├── mod.rs       — GameplayReader
+│   └── stable.rs    — GameplayInfo + pub mod memory
+├── resultscreen/
+│   ├── mod.rs       — ResultScreenReader
+│   └── stable.rs    — ResultScreenInfo + pub mod memory
+├── user/
+│   ├── mod.rs       — UserReader
+│   └── stable.rs    — UserInfo + pub mod memory
+├── overlay/
+│   ├── common.rs    — Key, KeyOverlay structs
+│   ├── mod.rs       — OverlayReader
+│   └── stable.rs    — imperative pointer walk + pub mod memory
+└── common/
+    ├── mod.rs       — GameState, GameMode, OsuClientKind enums
+    └── stable.rs    — GameStateInfo, TimingInfo, PauseInfo, …
+</code></pre>
+<h2 id="readmemory-derive-macro"><a class="header" href="#readmemory-derive-macro">ReadMemory Derive Macro</a></h2>
+<p>Structs derive <code>#[derive(ReadMemory)]</code> which generates a <code>read_from_memory(p, state, base)</code> method.</p>
+<p>Field attributes control how each field is read:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Attribute</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>#[offset(0xNN)]</code></td><td>Read primitive at <code>base + offset</code></td></tr>
+<tr><td><code>#[offset(0xNN, via = T)]</code></td><td>Read as <code>T</code>, convert with <code>From</code></td></tr>
+<tr><td><code>#[nested(0xNN)]</code></td><td>Delegate to <code>FieldType::read_from_memory(p, state, base + offset)</code></td></tr>
+<tr><td><code>#[ptr_chain(base, d1, …, final)]</code></td><td>Walk a pointer chain independent of the struct base</td></tr>
+<tr><td><code>#[computed(expr)]</code></td><td>Evaluate an expression (can reference earlier fields)</td></tr>
+<tr><td><code>#[skip]</code></td><td>Use <code>Default::default()</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>Consecutive <code>#[offset(LITERAL)]</code> primitive fields are <strong>batched</strong> into a single <code>p.read()</code> syscall.</p>
+<h2 id="reader-pattern"><a class="header" href="#reader-pattern">Reader Pattern</a></h2>
+<p>Each module exposes a <code>XxxReader&lt;'a&gt;</code> struct with an <code>info()</code> method that returns the complete data struct:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct GameplayReader&lt;'a&gt; {
+    pub process: &amp;'a Process,
+    pub state: &amp;'a mut State,
+    pub osu_type: OsuClientKind,
+}
+
+impl&lt;'a&gt; GameplayReader&lt;'a&gt; {
+    impl_osu_accessor! {
+        fn info() -&gt; GameplayInfo =&gt; stable::memory::info,
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>The <code>impl_osu_accessor!</code> macro generates the dispatch: Stable delegates to the stable implementation; other client types return <code>Error::Unsupported</code>.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="beatmap"><a class="header" href="#beatmap">Beatmap</a></h1>
+<p>Reads beatmap data. Available in <code>SongSelect</code>, <code>Editor</code>, <code>Playing</code>, and <code>ResultScreen</code> states.</p>
+<h2 id="structs"><a class="header" href="#structs">Structs</a></h2>
+<p>The beatmap module exposes several sub-structs that can be read independently or via the top-level <code>BeatmapInfo</code>:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct BeatmapInfo {
+    pub metadata: BeatmapMetadata,
+    pub location: BeatmapLocation,
+    pub stats: BeatmapStats,
+    pub technical: BeatmapTechnicalInfo,
+}
+<span class="boring">}</span></code></pre>
+<h3 id="beatmapmetadata"><a class="header" href="#beatmapmetadata"><code>BeatmapMetadata</code></a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Offset</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td><code>author</code></td><td><code>0x18</code></td><td>String</td></tr>
+<tr><td><code>creator</code></td><td><code>0x7C</code></td><td>String</td></tr>
+<tr><td><code>title_romanized</code></td><td><code>0x24</code></td><td>String</td></tr>
+<tr><td><code>title_original</code></td><td><code>0x28</code></td><td>String</td></tr>
+<tr><td><code>difficulty</code></td><td><code>0xAC</code></td><td>String</td></tr>
+<tr><td><code>tags</code></td><td><code>0x20</code></td><td>String</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="beatmaplocation"><a class="header" href="#beatmaplocation"><code>BeatmapLocation</code></a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Offset</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td><code>folder</code></td><td><code>0x78</code></td><td>String</td></tr>
+<tr><td><code>filename</code></td><td><code>0x90</code></td><td>String</td></tr>
+<tr><td><code>audio</code></td><td><code>0x64</code></td><td>String</td></tr>
+<tr><td><code>cover</code></td><td><code>0x68</code></td><td>String</td></tr>
+</tbody>
+</table>
+</div>
+<p>Helper methods: <code>get_file_path()</code>, <code>get_audio_path()</code>, <code>get_cover_path()</code>.</p>
+<h3 id="beatmapstats"><a class="header" href="#beatmapstats"><code>BeatmapStats</code></a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Offset</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td><code>ar</code></td><td><code>0x2C</code></td><td>f32</td></tr>
+<tr><td><code>cs</code></td><td><code>0x30</code></td><td>f32</td></tr>
+<tr><td><code>hp</code></td><td><code>0x34</code></td><td>f32</td></tr>
+<tr><td><code>od</code></td><td><code>0x38</code></td><td>f32</td></tr>
+<tr><td><code>length</code></td><td><code>0x134</code></td><td>i32</td></tr>
+<tr><td><code>object_count</code></td><td><code>0xF8</code></td><td>i32</td></tr>
+<tr><td><code>slider_count</code></td><td><code>0x146</code></td><td>i32</td></tr>
+<tr><td><code>star_rating</code></td><td>—</td><td><code>BeatmapStarRating</code> (skipped, computed separately)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="beatmaptechnicalinfo"><a class="header" href="#beatmaptechnicalinfo"><code>BeatmapTechnicalInfo</code></a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Offset</th><th>Type</th></tr>
+</thead>
+<tbody>
+<tr><td><code>md5</code></td><td><code>0x6C</code></td><td>String</td></tr>
+<tr><td><code>id</code></td><td><code>0xC8</code></td><td>i32</td></tr>
+<tr><td><code>set_id</code></td><td><code>0xCC</code></td><td>i32</td></tr>
+<tr><td><code>mode</code></td><td><code>0x11C</code> (via i32)</td><td><code>GameMode</code></td></tr>
+<tr><td><code>ranked_status</code></td><td><code>0x12C</code> (via i32)</td><td><code>BeatmapStatus</code></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="pointer-chain"><a class="header" href="#pointer-chain">Pointer Chain</a></h2>
+<pre><code>state.addresses.base - 0xC
+  → read_i32   (ptr1)
+  → read_i32   (beatmap_addr)  ← all nested structs use this as base
+</code></pre>
+<h2 id="usage"><a class="header" href="#usage">Usage</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut reader = BeatmapReader::new(&amp;p, &amp;mut state, OsuClientKind::Stable)?;
+let info = reader.info()?;
+println!("{} — {}", info.metadata.title_romanized, info.metadata.difficulty);
+println!("AR: {} CS: {} HP: {} OD: {}", info.stats.ar, info.stats.cs, info.stats.hp, info.stats.od);
+<span class="boring">}</span></code></pre>
+<p>Individual sub-structs can also be read directly:</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let meta = BeatmapMetadata::read(&amp;p, &amp;mut state)?;
+let loc  = BeatmapLocation::read(&amp;p, &amp;mut state)?;
+let path = loc.get_file_path();
+<span class="boring">}</span></code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="gameplay"><a class="header" href="#gameplay">Gameplay</a></h1>
+<p>Reads live gameplay data while osu! is in the <code>Playing</code> state.</p>
+<h2 id="struct-gameplayinfo"><a class="header" href="#struct-gameplayinfo">Struct: <code>GameplayInfo</code></a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct GameplayInfo {
+    pub score: i32,
+    pub mods: u32,
+    pub combo: i16,
+    pub max_combo: i16,
+    pub hp: f64,
+    pub username: String,
+    pub ig_time: i32,
+    pub retries: i32,
+    pub hits: Hit,
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Offset (from score_base)</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td><code>score</code></td><td><code>0x78</code></td><td></td></tr>
+<tr><td><code>mods</code></td><td><code>0x1C</code> → XOR</td><td>Decoded via XOR of two u64 values</td></tr>
+<tr><td><code>combo</code></td><td><code>0x94</code></td><td></td></tr>
+<tr><td><code>max_combo</code></td><td><code>0x68</code></td><td></td></tr>
+<tr><td><code>hp</code></td><td>ptr_chain: rulesets→+0x4→+0x68→+0x40, <code>+0x1C</code></td><td>Different pointer branch than score</td></tr>
+<tr><td><code>username</code></td><td><code>0x28</code></td><td></td></tr>
+<tr><td><code>ig_time</code></td><td>—</td><td>Delegated to <code>TimingInfo</code></td></tr>
+<tr><td><code>retries</code></td><td><code>base - 0x33</code> → <code>+0x8</code></td><td>Different base pointer</td></tr>
+<tr><td><code>hits</code></td><td><code>0x88</code> (nested <code>Hit</code>)</td><td>6× i16 batched read</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="pointer-chain-1"><a class="header" href="#pointer-chain-1">Pointer Chain</a></h2>
+<pre><code>state.addresses.rulesets - 0xb
+  → read_i32 + 0x4    (ruleset_addr)
+  → read_i32 + 0x68   (gameplay_base)
+  → read_i32 + 0x38   (score_base)  ← struct base
+</code></pre>
+<h2 id="usage-1"><a class="header" href="#usage-1">Usage</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut reader = GameplayReader::new(&amp;p, &amp;mut state, OsuClientKind::Stable);
+let info = reader.info()?;
+println!("Score: {} | Combo: {}x | HP: {:.2}", info.score, info.combo, info.hp);
+<span class="boring">}</span></code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="result-screen"><a class="header" href="#result-screen">Result Screen</a></h1>
+<p>Reads result screen data while osu! is in the <code>ResultScreen</code> state.</p>
+<h2 id="struct-resultscreeninfo"><a class="header" href="#struct-resultscreeninfo">Struct: <code>ResultScreenInfo</code></a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct ResultScreenInfo {
+    pub username: String,
+    pub mode: GameMode,
+    pub max_combo: i16,
+    pub score: i32,
+    pub hits: Hit,
+    pub accuracy: f64,
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Offset (from result_screen_base)</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td><code>username</code></td><td><code>0x28</code></td><td></td></tr>
+<tr><td><code>mode</code></td><td><code>0x64</code> (via i32)</td><td></td></tr>
+<tr><td><code>max_combo</code></td><td><code>0x68</code></td><td></td></tr>
+<tr><td><code>score</code></td><td><code>0x78</code></td><td></td></tr>
+<tr><td><code>hits</code></td><td><code>0x88</code> (nested <code>Hit</code>)</td><td>Same layout as gameplay</td></tr>
+<tr><td><code>accuracy</code></td><td>—</td><td>Computed from <code>mode</code> + <code>hits</code></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="pointer-chain-2"><a class="header" href="#pointer-chain-2">Pointer Chain</a></h2>
+<pre><code>state.addresses.rulesets - 0xb
+  → read_i32 + 0x4    (ruleset_addr)
+  → read_i32 + 0x38   (result_screen_base)  ← struct base
+</code></pre>
+<h2 id="usage-2"><a class="header" href="#usage-2">Usage</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut reader = ResultScreenReader::new(&amp;p, &amp;mut state, OsuClientKind::Stable);
+let info = reader.info()?;
+println!("Score: {} | Acc: {:.2}% | Max combo: {}x", info.score, info.accuracy, info.max_combo);
+<span class="boring">}</span></code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="user"><a class="header" href="#user">User</a></h1>
+<p>Reads the currently logged-in user profile. Always available once the osu! process is running.</p>
+<h2 id="struct-userinfo"><a class="header" href="#struct-userinfo">Struct: <code>UserInfo</code></a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct UserInfo {
+    pub accuracy: f64,
+    pub rankedscore: i64,
+    pub username: String,
+    pub id: i32,
+    pub level: f32,
+    pub playcount: i32,
+    pub playmode: i32,
+    pub rank: i32,
+    pub pp: i32,
+    pub bancho_status: i32,
+    pub country_code: i32,
+}
+<span class="boring">}</span></code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Field</th><th>Offset (from user_base)</th><th>Notes</th></tr>
+</thead>
+<tbody>
+<tr><td><code>accuracy</code></td><td><code>0x4</code></td><td>f64, batched with rankedscore</td></tr>
+<tr><td><code>rankedscore</code></td><td><code>0xC</code></td><td>i64</td></tr>
+<tr><td><code>username</code></td><td><code>0x30</code></td><td>String</td></tr>
+<tr><td><code>id</code></td><td><code>0x70</code></td><td>batched with level</td></tr>
+<tr><td><code>level</code></td><td><code>0x74</code></td><td>f32</td></tr>
+<tr><td><code>playcount</code></td><td><code>0x7C</code></td><td>5-field batch: 0x7C–0x8C</td></tr>
+<tr><td><code>playmode</code></td><td><code>0x80</code></td><td></td></tr>
+<tr><td><code>rank</code></td><td><code>0x84</code></td><td></td></tr>
+<tr><td><code>pp</code></td><td><code>0x88</code></td><td></td></tr>
+<tr><td><code>bancho_status</code></td><td><code>0x8C</code></td><td></td></tr>
+<tr><td><code>country_code</code></td><td><code>0x9C</code></td><td>separate read</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="pointer-chain-3"><a class="header" href="#pointer-chain-3">Pointer Chain</a></h2>
+<pre><code>state.addresses.user_profile + 0x7
+  → read_i32       (ptr1)
+  → read_i32 + 0x0 (user_base)  ← struct base
+</code></pre>
+<h2 id="usage-3"><a class="header" href="#usage-3">Usage</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut reader = UserReader::new(&amp;p, &amp;mut state, OsuClientKind::Stable);
+let info = reader.info()?;
+println!("Player: {} | Rank: #{} | PP: {}", info.username, info.rank, info.pp);
+<span class="boring">}</span></code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="overlay"><a class="header" href="#overlay">Overlay</a></h1>
+<p>Reads key/mouse press state and counts for the input overlay.</p>
+<p>Only available when osu! is <code>Playing</code> in osu!Standard mode (playmode == 0, beatmap mode == Osu).</p>
+<h2 id="struct-keyoverlay"><a class="header" href="#struct-keyoverlay">Struct: <code>KeyOverlay</code></a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct KeyOverlay {
+    pub key_1: Key,
+    pub key_2: Key,
+    pub mouse_1: Key,
+    pub mouse_2: Key,
+}
+
+pub struct Key {
+    pub pressed: bool,
+    pub count: i32,
+}
+<span class="boring">}</span></code></pre>
+<h2 id="implementation-note"><a class="header" href="#implementation-note">Implementation Note</a></h2>
+<p>The overlay data lives in a dynamic array structure that requires walking through multiple pointer levels at runtime. This cannot be expressed with the <code>ReadMemory</code> derive macro, so the implementation remains imperative in <code>stable.rs</code>.</p>
+<h2 id="pointer-chain-4"><a class="header" href="#pointer-chain-4">Pointer Chain</a></h2>
+<pre><code>state.addresses.rulesets - 0xb → +0x4 (ruleset_addr)
+  → ruleset_addr + 0xb0 (key_ptr)
+  → key_ptr + 0x10 → + 0x4 (key_array_addr)
+  → key_array_addr[0x8/0xC/0x10/0x14] → +0x1C (pressed), +0x14 (count)
+</code></pre>
+<h2 id="usage-4"><a class="header" href="#usage-4">Usage</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut reader = OverlayReader::new(&amp;p, &amp;mut state, OsuClientKind::Stable);
+let info = reader.info()?;
+println!("K1: {} ({})", info.key_1.pressed, info.key_1.count);
+<span class="boring">}</span></code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="common"><a class="header" href="#common">Common</a></h1>
+<p>Shared types and stable-client helpers used across all modules.</p>
+<h2 id="enums"><a class="header" href="#enums">Enums</a></h2>
+<h3 id="gamestate"><a class="header" href="#gamestate"><code>GameState</code></a></h3>
+<p>Represents the current osu! game state read from memory.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Variant</th><th>Value</th></tr>
+</thead>
+<tbody>
+<tr><td><code>MainMenu</code></td><td>0</td></tr>
+<tr><td><code>Editor</code></td><td>1</td></tr>
+<tr><td><code>Playing</code></td><td>2</td></tr>
+<tr><td><code>SongSelect</code></td><td>5</td></tr>
+<tr><td><code>ResultScreen</code></td><td>7</td></tr>
+<tr><td>…</td><td>…</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="gamemode"><a class="header" href="#gamemode"><code>GameMode</code></a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Variant</th><th>Value</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Osu</code></td><td>0</td></tr>
+<tr><td><code>Taiko</code></td><td>1</td></tr>
+<tr><td><code>Catch</code></td><td>2</td></tr>
+<tr><td><code>Mania</code></td><td>3</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="osuclientkind"><a class="header" href="#osuclientkind"><code>OsuClientKind</code></a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Variant</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Stable</code></td><td>osu!stable (fully supported)</td></tr>
+<tr><td><code>Lazer</code></td><td>osu!lazer (unsupported, returns <code>Error::Unsupported</code>)</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="stable-structs"><a class="header" href="#stable-structs">Stable Structs</a></h2>
+<h3 id="gamestateinfo"><a class="header" href="#gamestateinfo"><code>GameStateInfo</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct GameStateInfo {
+    pub state: GameState,
+}
+<span class="boring">}</span></code></pre>
+<p><code>init_base = p.read_i32(state.addresses.status - 0x4)?</code>, reads <code>GameState</code> via <code>u32</code> at offset <code>0x0</code>.</p>
+<h3 id="timinginfo"><a class="header" href="#timinginfo"><code>TimingInfo</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct TimingInfo {
+    pub game_time: i32,
+}
+<span class="boring">}</span></code></pre>
+<p><code>init_base = p.read_i32(state.addresses.playtime + 0x5)?</code>, game time in milliseconds at offset <code>0x0</code>.</p>
+<h3 id="menuinfo"><a class="header" href="#menuinfo"><code>MenuInfo</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct MenuInfo {
+    pub mods: u32,
+}
+<span class="boring">}</span></code></pre>
+<p>Active mods in the song select menu. <code>init_base = p.read_i32(state.addresses.menu_mods + 0x9)?</code>.</p>
+<h3 id="pauseinfo"><a class="header" href="#pauseinfo"><code>PauseInfo</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct PauseInfo {
+    pub pause_val: i8,
+}
+impl PauseInfo {
+    pub fn is_paused(&amp;self) -&gt; bool { self.pause_val == 1 }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="replayinfo"><a class="header" href="#replayinfo"><code>ReplayInfo</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct ReplayInfo {
+    pub is_watching: bool,
+}
+<span class="boring">}</span></code></pre>
+<h3 id="pathinfo"><a class="header" href="#pathinfo"><code>PathInfo</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct PathInfo {
+    pub songs_folder: PathBuf,
+}
+<span class="boring">}</span></code></pre>
+<p>Reads the <code>Songs</code> folder path from osu! settings. On Linux may return a relative path.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="proc-macros"><a class="header" href="#proc-macros">Proc Macros</a></h1>
+<p>The <code>rosu-memory-macros</code> crate provides <code>#[derive(ReadMemory)]</code>.</p>
+<h2 id="struct-level-attributes"><a class="header" href="#struct-level-attributes">Struct-Level Attributes</a></h2>
+<p>Use <code>#[read_memory(...)]</code> on the struct:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Key</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>init_base = expr</code></td><td>Expression that computes the starting base address. Generates a <code>read(p, state)</code> convenience method.</td></tr>
+<tr><td><code>chain = [o1, o2, …]</code></td><td>Pointer dereference chain applied to the base: <code>addr = p.read_i32(addr + oN)?</code> for each offset.</td></tr>
+<tr><td><code>guard = Variant</code></td><td>Checks <code>GameState::Variant</code> before reading (requires <code>check_game_state</code> helper).</td></tr>
+</tbody>
+</table>
+</div>
+<p>The alternate <code>#[init_base(expr)]</code> attribute (without <code>read_memory</code>) is also supported.</p>
+<h2 id="field-level-attributes"><a class="header" href="#field-level-attributes">Field-Level Attributes</a></h2>
+<p>Every field must have one of:</p>
+<h3 id="offsetexpr--offsetexpr-via--type"><a class="header" href="#offsetexpr--offsetexpr-via--type"><code>#[offset(expr)]</code> / <code>#[offset(expr, via = Type)]</code></a></h3>
+<p>Reads a primitive from <code>base + expr</code>. Type is inferred from the Rust field type.
+Use <code>via = Type</code> when the field type needs a <code>From</code> conversion (e.g. enum from i32).</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[offset(0x78)]
+pub score: i32,
+
+#[offset(0x64, via = i32)]
+pub mode: GameMode,
+<span class="boring">}</span></code></pre>
+<h3 id="nestedexpr"><a class="header" href="#nestedexpr"><code>#[nested(expr)]</code></a></h3>
+<p>Delegates to <code>FieldType::read_from_memory(p, state, base + expr)</code>.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[nested(0x88)]
+pub hits: Hit,
+<span class="boring">}</span></code></pre>
+<h3 id="ptr_chainbase_expr-d1-d2--final_offset"><a class="header" href="#ptr_chainbase_expr-d1-d2--final_offset"><code>#[ptr_chain(base_expr, d1, d2, …, final_offset)]</code></a></h3>
+<p>Walks a custom pointer chain independent of the struct base.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[ptr_chain(state.addresses.rulesets - 0xb, 0x4, 0x68, 0x40, 0x1C)]
+pub hp: f64,
+<span class="boring">}</span></code></pre>
+<h3 id="computedexpr"><a class="header" href="#computedexpr"><code>#[computed(expr)]</code></a></h3>
+<p>Inline expression; can reference fields declared earlier in the struct.</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[computed(crate::reader::helpers::calculate_accuracy(&amp;mode, &amp;hits)?)]
+pub accuracy: f64,
+<span class="boring">}</span></code></pre>
+<h3 id="skip"><a class="header" href="#skip"><code>#[skip]</code></a></h3>
+<p>Initialises with <code>Default::default()</code>.</p>
+<h2 id="batching"><a class="header" href="#batching">Batching</a></h2>
+<p>Consecutive <code>#[offset(LITERAL)]</code> fields with primitive types are grouped into a single <code>p.read()</code> call, minimising <code>readProcessMemory</code> syscalls.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+        <!-- Livereload script (if served using the cli tool) -->
+        <script>
+            const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsAddress = wsProtocol + "//" + location.host + "/" + "__livereload";
+            const socket = new WebSocket(wsAddress);
+            socket.onmessage = function (event) {
+                if (event.data === "reload") {
+                    socket.close();
+                    location.reload();
+                }
+            };
+
+            window.onbeforeunload = function() {
+                socket.close();
+            }
+        </script>
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+
+    </div>
+    </body>
+</html>
