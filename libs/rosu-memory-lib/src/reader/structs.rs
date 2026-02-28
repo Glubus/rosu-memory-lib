@@ -5,6 +5,7 @@ use rosu_mem::{
     process::{Process, ProcessTraits},
     signature::Signature,
 };
+use rosu_memory_macros::ReadMemory;
 use std::collections::HashMap;
 use std::str::FromStr;
 use std::time::Instant;
@@ -25,13 +26,20 @@ pub struct StaticAddresses {
     pub check_replay_addr: i32,
 }
 
-#[derive(Debug, Default, Clone)]
+/// Notes touchées durant une partie (geki, 300, katu, 100, 50, miss)
+#[derive(Debug, Default, Clone, ReadMemory)]
 pub struct Hit {
-    pub _geki: i16,
-    pub _300: i16,
-    pub _katu: i16,
+    #[offset(0x0)]
     pub _100: i16,
+    #[offset(0x2)]
+    pub _300: i16,
+    #[offset(0x4)]
     pub _50: i16,
+    #[offset(0x6)]
+    pub _geki: i16,
+    #[offset(0x8)]
+    pub _katu: i16,
+    #[offset(0xA)]
     pub _miss: i16,
 }
 
