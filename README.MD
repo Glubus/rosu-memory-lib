@@ -2,65 +2,60 @@
 
 A modular Rust library for reading osu! memory, forked from [rosu-memory](https://github.com/486c/rosu-memory).
 
+> **Full documentation:** see the [mdbook docs](./docs/) for architecture overview, module reference, and macro documentation.
+
 ## Overview
 
-While rosu_memory was originally designed as a binary application, this fork transforms it into a flexible library that can be integrated into any Rust project. This architectural change allows developers to build their own tools and applications around osu! memory reading capabilities.
+While rosu_memory was originally designed as a binary application, this fork transforms it into a flexible library that can be integrated into any Rust project. The library uses a `#[derive(ReadMemory)]` proc macro to generate type-safe, batched memory reads from annotated structs — eliminating pointer-chain boilerplate entirely.
 
 ## Features
 
-- Memory reading for stable (lazer support may come soon)
-- Modular design allowing custom implementations
-- Callback system for real-time data processing
-- Type-safe memory access
-- Cross-platform support (Windows primary focus)
+- Memory reading for osu!stable (lazer support may come in the future)
+- `#[derive(ReadMemory)]` proc macro — declare offsets on struct fields, get a `read_from_memory` method
+- Automatic batching of consecutive primitive reads into single `readProcessMemory` calls
+- Modular design: one `Reader` struct per domain (`BeatmapReader`, `GameplayReader`, `ResultScreenReader`, `UserReader`, `OverlayReader`)
+- Type-safe memory access with full Rust error propagation
 
+## Quick Start
 
-Basic example:
 ```rust
-use rosu_memory_lib::reader::{init_loop, waiting_for_play};
+use rosu_memory_lib::reader::{
+    common::{OsuClientKind, stable::GameStateInfo},
+    gameplay::GameplayReader,
+    structs::{State, StaticAddresses},
+};
+use rosu_mem::process::Process;
 
-fn main() -> eyre::Result<()> {
-    // Initialize the memory reader
-    let (mut state, process) = init_loop(500)?;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let p = Process::connect("osu!")?;
+    let mut state = State { addresses: StaticAddresses::new(&p)? };
 
-    // Wait for gameplay with optional callback
-    waiting_for_play(&process, &mut state, Some(|p, state| {
-        println!("beatmap title: {}", rosu_memory_lib::reader::beatmap::stable::get_title(p,state))
-        Ok(())
-    }))?;
-
+    let mut gameplay = GameplayReader::new(&p, &mut state, OsuClientKind::Stable);
+    let info = gameplay.info()?;
+    println!("Score: {} | Combo: {}x | HP: {:.2}", info.score, info.combo, info.hp);
     Ok(())
 }
 ```
+
+## Module Overview
+
+| Module | Struct | Available when |
+|--------|--------|----------------|
+| `beatmap` | `BeatmapInfo` | SongSelect, Editor, Playing, ResultScreen |
+| `gameplay` | `GameplayInfo` | Playing |
+| `resultscreen` | `ResultScreenInfo` | ResultScreen |
+| `user` | `UserInfo` | always |
+| `overlay` | `KeyOverlay` | Playing + osu!Standard mode |
+
+See the [module docs](./docs/src/modules/) for field tables, pointer chains, and usage examples.
 
 ## Examples
 
 Check out the `examples/` directory for various implementations and use cases.
 
-## Language Bindings
-
-The library provides bindings for multiple programming languages (not finished):
-
-### Python
-Python bindings are available in the `bindings/python` directory. They provide a Pythonic interface to the library's functionality using PyO3.
-
-Example:
-```python
-from rosu_memory import init_loop, get_beatmap_info
-
-# Initialize the memory reader
-state, process = init_loop(500)
-
-# Get current beatmap info
-beatmap = get_beatmap_info(process, state)
-print(f"Playing: {beatmap.metadata.title_romanized}")
-```
-
 ## Projects Using It
 
-Here are some projects that use rosu-memory-lib:
-
-- [rosu-snippets](https://github.com/Glubus/rosu-snippets) - Create your own snippets for efficient mapping in mania
+- [rosu-snippets](https://github.com/Glubus/rosu-snippets) — Create your own snippets for efficient mapping in mania
 
 *If you're using rosu-memory-lib in your project, feel free to submit a PR to add it to this list!*
 
