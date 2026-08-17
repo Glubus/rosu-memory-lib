@@ -50,8 +50,7 @@ pub fn calculate_accuracy(gamemode: &GameMode, hit: &Hit) -> Result<f64, Error> 
             (caught / total) * 100.0
         }
         GameMode::Mania => {
-            let total =
-                (hit._geki + hit._300 + hit._katu + hit._100 + hit._50 + hit._miss) as f64;
+            let total = (hit._geki + hit._300 + hit._katu + hit._100 + hit._50 + hit._miss) as f64;
             if total == 0.0 {
                 return Ok(0.0);
             }

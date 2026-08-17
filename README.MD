@@ -12,7 +12,7 @@ While rosu_memory was originally designed as a binary application, this fork tra
 
 - Memory reading for osu!stable (lazer support may come in the future)
 - `#[derive(ReadMemory)]` proc macro — declare offsets on struct fields, get a `read_from_memory` method
-- Automatic batching of consecutive primitive reads into single `readProcessMemory` calls
+- Automatic batching of adjacent primitive fields in a derived structure into one `readProcessMemory` call
 - Modular design: one `Reader` struct per domain (`BeatmapReader`, `GameplayReader`, `ResultScreenReader`, `UserReader`, `OverlayReader`)
 - Type-safe memory access with full Rust error propagation
 
@@ -36,6 +36,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 ```
+
+## Automatic read batching
+
+Batching applies only to a structure using `#[derive(ReadMemory)]`. The macro
+recognises adjacent primitive fields with literal `#[offset(...)]` values and a
+common structure base, performs one read of the enclosing byte range, then
+decodes each field from that buffer.
+
+It does **not** enlarge a targeted read: a derived structure with one eligible
+field still generates its normal typed read (`read_i32`, `read_f32`, etc.), and
+calls you write directly on `Process` are never changed. Dynamic fields
+(`String`, `nested`, `ptr_chain`, `computed`, non-literal offsets, and `skip`)
+remain individual operations to preserve their ordering and semantics.
 
 ## Module Overview
 

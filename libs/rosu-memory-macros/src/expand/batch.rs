@@ -18,18 +18,34 @@ fn gen_field_read(c: &BatchCandidate, min_off: u64, buf_name: &Ident) -> TokenSt
     let raw_ty = &c.raw_ty;
     let rel_start = (c.offset - min_off) as usize;
     let rel_end = rel_start + c.size;
+    let raw_name = format_ident!("__raw_{}_{}", buf_name, name);
+    let bytes_name = format_ident!("__bytes_{}_{}", buf_name, name);
+    let size = c.size;
+
+    let decode_input = quote! {
+        let #bytes_name = #buf_name
+            .get(#rel_start..#rel_end)
+            .ok_or_else(|| crate::Error::Other(
+                "ReadMemory generated an invalid batch slice".to_string(),
+            ))?;
+        let #raw_name: [u8; #size] = #bytes_name
+            .try_into()
+            .map_err(|_| crate::Error::Other(
+                "ReadMemory generated a batch slice with an invalid length".to_string(),
+            ))?;
+    };
 
     if c.needs_from {
         quote! {
+            #decode_input
             let #name: #field_ty = #field_ty::from(
-                #raw_ty::from_le_bytes(#buf_name[#rel_start..#rel_end].try_into().unwrap())
+                #raw_ty::from_le_bytes(#raw_name)
             );
         }
     } else {
         quote! {
-            let #name: #field_ty = #field_ty::from_le_bytes(
-                #buf_name[#rel_start..#rel_end].try_into().unwrap()
-            );
+            #decode_input
+            let #name: #field_ty = #field_ty::from_le_bytes(#raw_name);
         }
     }
 }
@@ -44,6 +60,8 @@ pub fn gen_batch_block(candidates: &[BatchCandidate], batch_idx: usize) -> Token
         .unwrap();
     let buf_size = (max_end - min_off) as usize;
     let buf_name = format_ident!("__batch_{}", batch_idx);
+    // `BatchCandidate` only accepts offsets that fit in i32 (the address type
+    // exposed by rosu-mem), so this conversion cannot wrap.
     let min_off_i32 = min_off as i32;
 
     let field_reads: Vec<TokenStream> = candidates

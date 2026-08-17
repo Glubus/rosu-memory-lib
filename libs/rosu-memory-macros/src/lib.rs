@@ -20,13 +20,14 @@ mod utils;
 ///
 /// | Key     | Example Value                | Description                                                                 |
 /// |---------|------------------------------|-----------------------------------------------------------------------------|
-/// | `base`  | `p.read_i32(0x1234)?`        | Sets the initial base address expression. May reference `p` and `state`.    |
+/// | `init_base` | `p.read_i32(0x1234)?`     | Sets the initial base address expression. May reference `p` and `state`.    |
 /// | `chain` | `[0x10, 0x20]`               | Translates to consecutive `addr = p.read_i32(addr + offset)?` pointer walks.|
 /// | `guard` | `Playing`                    | Ensures the game is in `GameState::Playing` before reading memory.         |
 ///
-/// If `base` is provided, the signature assumes no starting address is needed from the caller:
+/// If `init_base` is provided, the macro also generates a `read` method that
+/// computes the base before delegating to `read_from_memory`:
 /// ```rust,ignore
-/// pub fn read_from_memory(p: &Process, state: &mut State) -> Result<Self, Error>
+/// pub fn read(p: &Process, state: &mut State) -> Result<Self, Error>
 /// ```
 ///
 /// If `base` is omitted, the method instead takes an `i32` parameter for nested components:
@@ -81,6 +82,6 @@ mod utils;
 pub fn derive_read_memory(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     expand::derive_read_memory(input)
-        .unwrap_or_else(|e| e.to_compile_error().into())
+        .unwrap_or_else(|e| e.to_compile_error())
         .into()
 }

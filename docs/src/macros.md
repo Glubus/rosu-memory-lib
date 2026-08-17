@@ -64,4 +64,12 @@ Initialises with `Default::default()`.
 
 ## Batching
 
-Consecutive `#[offset(LITERAL)]` fields with primitive types are grouped into a single `p.read()` call, minimising `readProcessMemory` syscalls.
+The derive examines each structure and automatically groups adjacent primitive
+fields that use the same base address and a static `#[offset(LITERAL)]`: they
+become one `p.read()` over the smallest byte range that contains them, then each
+value is decoded from that buffer. A single eligible field keeps its typed read
+(`read_i32`, `read_f32`, etc.). Dynamic reads (`#[nested]`, `#[ptr_chain]`,
+`#[computed]`, strings, non-literal offsets, and `#[skip]`) remain barriers, so
+the macro never reorders user code with possible dependencies or side effects.
+Any memory-read failure is propagated through `Result`; generated buffer slicing
+also returns `Error::Other` instead of panicking if an internal invariant fails.

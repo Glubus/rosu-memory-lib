@@ -42,6 +42,11 @@ fn get_batch_candidate(
             let effective_ty = via.as_ref().unwrap_or(field_ty);
             let off = expr_as_u64(expr)?;
             let sz = primitive_byte_size(effective_ty)?;
+            // The generated process API uses signed 32-bit addresses. Do not
+            // turn an out-of-range literal into a wrapped batch address.
+            if off > i32::MAX as u64 {
+                return None;
+            }
             Some(BatchCandidate {
                 name: name.clone(),
                 field_ty: field_ty.clone(),
@@ -77,5 +82,56 @@ fn flush_batch(batch_run: &mut Vec<BatchCandidate>, read_stmts: &mut Vec<TokenSt
         let idx = read_stmts.len();
         read_stmts.push(gen_batch_block(batch_run, idx));
         batch_run.clear();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use syn::parse_quote;
+
+    #[test]
+    fn batches_adjacent_static_offsets() {
+        let input: syn::DeriveInput = parse_quote! {
+            struct Stats {
+                #[offset(0x10)] first: i32,
+                #[offset(0x20)] second: i16,
+            }
+        };
+        let fields = match input.data {
+            syn::Data::Struct(data) => match data.fields {
+                syn::Fields::Named(fields) => fields.named,
+                _ => unreachable!(),
+            },
+            _ => unreachable!(),
+        };
+
+        let (stmts, _) = process_fields(fields.iter()).unwrap();
+        let output = quote!(#(#stmts)*).to_string();
+
+        assert_eq!(output.matches("p . read (__base + 16i32").count(), 1);
+        assert!(output.contains("let mut __batch_0 = [0u8 ; 18usize]"));
+        assert!(output.contains(". get (0usize .. 4usize)"));
+        assert!(!output.contains("unwrap"));
+    }
+
+    #[test]
+    fn keeps_a_single_field_as_a_typed_read() {
+        let input: syn::DeriveInput = parse_quote! {
+            struct Score { #[offset(0x78)] value: i32 }
+        };
+        let fields = match input.data {
+            syn::Data::Struct(data) => match data.fields {
+                syn::Fields::Named(fields) => fields.named,
+                _ => unreachable!(),
+            },
+            _ => unreachable!(),
+        };
+
+        let (stmts, _) = process_fields(fields.iter()).unwrap();
+        let output = quote!(#(#stmts)*).to_string();
+
+        assert!(output.contains("p . read_i32 (__base + 120i32)"));
+        assert!(!output.contains("__batch_"));
     }
 }

@@ -6,6 +6,7 @@ use syn::{
 };
 
 /// Everything parsed from `#[read_memory(...)]` on the struct itself.
+#[derive(Default)]
 pub struct ReadMemoryStructAttr {
     /// Each element becomes `addr = p.read_i32(addr + element)?`
     pub chain: Vec<Expr>,
@@ -14,16 +15,6 @@ pub struct ReadMemoryStructAttr {
     /// Base address initialization expression for generating .read() method.
     /// If provided, generates a .read(p, state) method that computes the base.
     pub init_base: Option<Expr>,
-}
-
-impl Default for ReadMemoryStructAttr {
-    fn default() -> Self {
-        Self {
-            chain: vec![],
-            guard: None,
-            init_base: None,
-        }
-    }
 }
 
 impl Parse for ReadMemoryStructAttr {
