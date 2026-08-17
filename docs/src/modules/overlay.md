@@ -22,7 +22,11 @@ pub struct Key {
 
 ## Implementation Note
 
-The overlay data lives in a dynamic array structure that requires walking through multiple pointer levels at runtime. This cannot be expressed with the `ReadMemory` derive macro, so the implementation remains imperative in `stable.rs`.
+The overlay starts from a dynamic pointer chain, so resolving the array remains
+imperative. Once the array is resolved, the four contiguous entry pointers are
+read in one `ReadMemory` batch and each entry's fixed `count`/`pressed` fields
+are read in one batch. This reduces the key-data reads from 16 individual calls
+to 5 batched calls while preserving error propagation.
 
 ## Pointer Chain
 

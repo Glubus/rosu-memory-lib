@@ -1,7 +1,8 @@
 //! Module de lecture mémoire overlay touches pour le client stable d'osu!
 //!
 //! Fournit la lecture des données de l'overlay des touches depuis la mémoire du processus osu!stable.
-//! Le parcours dynamique du tableau de pointeurs empêche l'utilisation du macro ReadMemory ici.
+//! Le parcours dynamique du tableau reste impératif, mais les entrées à offsets fixes
+//! sont lues par `ReadMemory` en batches.
 
 use crate::reader::beatmap::stable::BeatmapInfo;
 use crate::reader::common::stable::GameStateInfo;
@@ -11,6 +12,40 @@ use crate::reader::structs::State;
 use crate::reader::user::stable::memory::playmode;
 use crate::Error;
 use rosu_mem::process::{Process, ProcessTraits};
+use rosu_memory_macros::ReadMemory;
+
+/// Pointeurs des quatre entrées du tableau de touches. Les pointeurs sont
+/// contigus : le derive les récupère dans une seule lecture mémoire.
+#[derive(ReadMemory)]
+struct KeyPointers {
+    #[offset(0x8)]
+    key_1: i32,
+    #[offset(0xC)]
+    key_2: i32,
+    #[offset(0x10)]
+    mouse_1: i32,
+    #[offset(0x14)]
+    mouse_2: i32,
+}
+
+/// Représentation mémoire d'une touche. `count` et `pressed` partagent le
+/// même objet pointé et sont donc lus dans un unique buffer.
+#[derive(ReadMemory)]
+struct KeyMemory {
+    #[offset(0x14)]
+    count: i32,
+    #[offset(0x1C)]
+    pressed: i32,
+}
+
+impl From<KeyMemory> for Key {
+    fn from(value: KeyMemory) -> Self {
+        Self {
+            pressed: value.pressed != 0,
+            count: value.count,
+        }
+    }
+}
 
 /// Adresse de base du ruleset osu!Standard en cours de jeu
 fn ruleset_addr(p: &Process, state: &mut State) -> Result<i32, Error> {
@@ -45,35 +80,13 @@ pub mod memory {
             )));
         }
 
-        let key_1_pressed = p.read_i32(p.read_i32(key_array_addr + 0x8)? + 0x1C)? != 0;
-        let key_1_count = p.read_i32(p.read_i32(key_array_addr + 0x8)? + 0x14)?;
-
-        let key_2_pressed = p.read_i32(p.read_i32(key_array_addr + 0xc)? + 0x1C)? != 0;
-        let key_2_count = p.read_i32(p.read_i32(key_array_addr + 0xc)? + 0x14)?;
-
-        let mouse_1_pressed = p.read_i32(p.read_i32(key_array_addr + 0x10)? + 0x1C)? != 0;
-        let mouse_1_count = p.read_i32(p.read_i32(key_array_addr + 0x10)? + 0x14)?;
-
-        let mouse_2_pressed = p.read_i32(p.read_i32(key_array_addr + 0x14)? + 0x1C)? != 0;
-        let mouse_2_count = p.read_i32(p.read_i32(key_array_addr + 0x14)? + 0x14)?;
+        let key_pointers = KeyPointers::read_from_memory(p, state, key_array_addr)?;
 
         Ok(KeyOverlay {
-            key_1: Key {
-                pressed: key_1_pressed,
-                count: key_1_count,
-            },
-            key_2: Key {
-                pressed: key_2_pressed,
-                count: key_2_count,
-            },
-            mouse_1: Key {
-                pressed: mouse_1_pressed,
-                count: mouse_1_count,
-            },
-            mouse_2: Key {
-                pressed: mouse_2_pressed,
-                count: mouse_2_count,
-            },
+            key_1: KeyMemory::read_from_memory(p, state, key_pointers.key_1)?.into(),
+            key_2: KeyMemory::read_from_memory(p, state, key_pointers.key_2)?.into(),
+            mouse_1: KeyMemory::read_from_memory(p, state, key_pointers.mouse_1)?.into(),
+            mouse_2: KeyMemory::read_from_memory(p, state, key_pointers.mouse_2)?.into(),
         })
     }
 }
